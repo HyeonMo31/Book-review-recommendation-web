@@ -28,7 +28,6 @@ public class Discussion {
     private LocalDateTime writeDate;
 
     @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL)
-    @JoinColumn(name = "discussion_index")
     private List<Comment> comments;
 
 

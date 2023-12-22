@@ -1,6 +1,8 @@
 package com.web.bookservice.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,8 +17,11 @@ public class Member {
     @GeneratedValue
     private Long memberIndex;
 
+    @NotBlank
     private String name;
+    @NotBlank
     private String id;
+    @NotBlank
     private String password;
 
     private LocalDateTime joinDate;
