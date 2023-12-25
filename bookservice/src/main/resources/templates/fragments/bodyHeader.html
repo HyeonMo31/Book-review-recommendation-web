@@ -17,13 +17,19 @@
 
           <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
               <li><a th:href="@{/}" class="nav-link px-2 link-secondary">홈</a></li>
-              <li><a href="#" class="nav-link px-2">검색</a></li>
+              <li><a th:href="@{/search}" class="nav-link px-2">검색</a></li>
               <li><a href="#" class="nav-link px-2">토론</a></li>
           </ul>
 
-          <div class="col-md-3 text-end">
+          <div th:unless="${isLogin}" class="col-md-3 text-end">
               <button th:onclick="|location.href='@{/login}'|" type="button" class="btn btn-outline-primary me-2">로그인</button>
               <button th:onclick="|location.href='@{/register}'|" type="button" class="btn btn-primary">회원가입</button>
+          </div>
+          <div th:if="${isLogin}" class="col-md-3 text-end d-flex justify-content-end" >
+              <form th:action="@{/logout}" method="post">
+                  <button type="submit" class="btn btn-outline-primary me-2">로그아웃</button>
+              </form>
+              <button th:onclick="|location.href='@{/mypage}'|" type="button" class="btn btn-primary">마이페이지</button>
           </div>
       </header>
     </div>

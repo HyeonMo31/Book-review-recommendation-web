@@ -18,8 +18,12 @@ public class MemberRepository {
         repository.save(member);
     }
 
-    public boolean findById(String id) {
+    public boolean existsMemberById(String id) {
         return repository.existsById(id);
+    }
+
+    public Member findMemberById(String id) {
+        return repository.findById(id);
     }
 
 }

@@ -12,21 +12,33 @@
 <body>
     <div class="container heightCal">
         <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-        <div class="container d-flex justify-content-center login-register-form">
+        <div class="container d-flex justify-content-center margin-top-100">
             <div class="col-md-2 col-lg-3">
-                <form>
+                <form th:action="@{/login}" th:object="${loginMember}" method="post">
                     <img class="mb-4" src="img/hani.jpg"  width="72" height="57">
                     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-<!--                    <div th:if="${not #strings.isEmpty(successMessage)}" class="alert alert-success">-->
-<!--                        <p th:text="${successMessage}"></p>-->
+<!--                    <div th:if="${not #strings.isEmpty(notFound)}" class="alert alert-success">-->
+<!--                        <p th:text="${notFound}"></p>-->
 <!--                    </div>-->
+                    <!-- 예시: 에러 메시지 출력 부분 -->
+<!--                    <div th:if="${#fields.hasGlobalErrors()}" th:errorclass="field-error">-->
+<!--                        <span th:text="${#fields.globalErrors()}"></span>-->
+<!--                    </div>-->
+                    <div th:if="${#fields.hasGlobalErrors()}">
+                        <p class="field-error" th:each="err : ${#fields.globalErrors()}"
+                           th:text="${err}">전체 오류 메시지</p>
+                    </div>
+
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="">
-                        <label for="floatingInput">아이디</label>
+                        <input type="text" class="form-control" id="id" th:field="*{id}" placeholder=""
+                        th:errorclass="field-error">
+                        <div class="field-error" th:errors="*{id}" />
+                        <label for="id">아이디</label>
                     </div>
                     <div class="form-floating">
-                        <input type="password" class="form-control" id="floatingPassword" placeholder="">
-                        <label for="floatingPassword">비밀번호</label>
+                        <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="" th:errorclass="field-error">
+                        <div class="field-error" th:errors="*{password}" />
+                        <label for="password">비밀번호</label>
                     </div>
 
                     <div class="form-check text-start my-3">
