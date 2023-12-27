@@ -1,5 +1,6 @@
 package com.web.bookservice.service;
 
+import com.web.bookservice.domain.Book;
 import com.web.bookservice.domain.Member;
 import com.web.bookservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class MemberService {
+public class BookService {
 
     private final MemberRepository memberRepository;
 
@@ -39,6 +40,7 @@ public class MemberService {
         }
         return null;
     }
+
 
     public void validateDuplicateMember(String id) {
         if(memberRepository.existsMemberById(id))

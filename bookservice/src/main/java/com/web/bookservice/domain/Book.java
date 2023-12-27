@@ -15,9 +15,12 @@ public class Book {
     @GeneratedValue
     private Long bookIndex;
 
-    private String text;
+    private String title;
+    private String description;
     private double rate;
     private String author;
+    private String publisher;
+    private String image;
     private LocalDateTime publicationDate;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)

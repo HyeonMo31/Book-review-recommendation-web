@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class MemberRepository {
 
 
-    private final SpringDataJpaMemberRepository repository;
+    private final SpringDataJpaRepository repository;
 
     public void save(Member member) {
         member.setJoinDate(LocalDateTime.now());
@@ -25,5 +25,6 @@ public class MemberRepository {
     public Member findMemberById(String id) {
         return repository.findById(id);
     }
+
 
 }

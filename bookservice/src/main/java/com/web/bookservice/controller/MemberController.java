@@ -1,8 +1,8 @@
-package com.web.bookservice.Controller;
+package com.web.bookservice.controller;
 
 import com.web.bookservice.domain.LoginMember;
 import com.web.bookservice.domain.Member;
-import com.web.bookservice.service.MemberService;
+import com.web.bookservice.service.BookService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberService memberService;
+    private final BookService bookService;
 
     @GetMapping("/login")
     public String loginForm(@ModelAttribute("loginMember")LoginMember loginMember) {
@@ -37,7 +37,7 @@ public class MemberController {
             return "user/login";
         }
 
-        Member member = memberService.login(loginMember.getId(), loginMember.getPassword());
+        Member member = bookService.login(loginMember.getId(), loginMember.getPassword());
         //rejecValue 안쓰면 에러코드 다음에 바로 디폴트 메시지 가능이구먼.
         if(member == null) {
 
@@ -68,7 +68,7 @@ public class MemberController {
         }
 
         try {
-            memberService.join(member);
+            bookService.join(member);
             redirectAttributes.addFlashAttribute("successMessage", "회원가입이 완료 되었습니다.");
         } catch (IllegalStateException e) {
             result.rejectValue("id", null, null, "이미 존재하는 아이디입니다.");

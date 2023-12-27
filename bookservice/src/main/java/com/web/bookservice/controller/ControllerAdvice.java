@@ -1,12 +1,11 @@
-package com.web.bookservice.Controller;
+package com.web.bookservice.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @org.springframework.web.bind.annotation.ControllerAdvice
@@ -26,4 +25,5 @@ public class ControllerAdvice {
 
         model.addAttribute("isLogin", isLogin);
     }
+
 }
