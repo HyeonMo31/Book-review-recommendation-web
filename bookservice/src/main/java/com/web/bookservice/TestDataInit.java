@@ -3,6 +3,7 @@ package com.web.bookservice;
 import com.web.bookservice.domain.Member;
 import com.web.bookservice.repository.MemberRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;

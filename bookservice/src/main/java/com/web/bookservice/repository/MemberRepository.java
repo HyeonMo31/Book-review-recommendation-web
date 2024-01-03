@@ -1,6 +1,7 @@
 package com.web.bookservice.repository;
 
 import com.web.bookservice.domain.Member;
+import com.web.bookservice.repository.jpa.SpringDataJpaMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 public class MemberRepository {
 
 
-    private final SpringDataJpaRepository repository;
+    private final SpringDataJpaMemberRepository repository;
 
     public void save(Member member) {
         member.setJoinDate(LocalDateTime.now());

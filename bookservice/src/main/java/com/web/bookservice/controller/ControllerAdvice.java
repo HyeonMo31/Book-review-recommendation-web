@@ -21,9 +21,13 @@ public class ControllerAdvice {
             isLogin = false;
         } else {
             isLogin = true;
+            //전역에서 로그인 정보를 확인하기 위해서.
+            model.addAttribute("user", session.getAttribute("user"));
         }
 
         model.addAttribute("isLogin", isLogin);
+
+
     }
 
 }

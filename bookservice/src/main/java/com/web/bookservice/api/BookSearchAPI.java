@@ -2,14 +2,21 @@ package com.web.bookservice.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.web.bookservice.domain.Book;
+import com.web.bookservice.service.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,15 +24,21 @@ import java.util.Map;
 
 
 @Slf4j
+@RequiredArgsConstructor
+@Component
 public class BookSearchAPI {
 
-    public List<BookParsing> func(String query) {
+    private final BookService bookService;
+
+    public List<Book> func(String query) {
         String clientId = "ha7STvEFwLDwnDflONB5"; //애플리케이션 클라이언트 아이디
         String clientSecret = "4zNLWo0tMF"; //애플리케이션 클라이언트 시크릿
 
-        List<BookParsing> books = new ArrayList<>();
+//        List<BookParsing> books = new ArrayList<>();
+//        BookParsing bookParsing = new BookParsing();
+        List<Book> books = new ArrayList<>();
+
         ObjectMapper objectMapper = new ObjectMapper();
-        BookParsing bookParsing = new BookParsing();
         JsonNode jsonNode;
 
         String text = null;
@@ -36,7 +49,7 @@ public class BookSearchAPI {
         }
 
         String apiURL = "https://openapi.naver.com/v1/search/book?query=" + text
-                + "&display=100";    // JSON 결과
+                + "&display=5";    // JSON 결과
 
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("X-Naver-Client-Id", clientId);
@@ -47,18 +60,30 @@ public class BookSearchAPI {
             jsonNode = objectMapper.readTree(responseBody);
 
             for(JsonNode itemNode : jsonNode.get("items")) {
-                //헷갈렸던 점 : 들어오는 필드명과 내가 만든 bookParsing 클래스의 필드명이 일치함과 동시에 개수도 같아야 들어온다.
-                bookParsing = objectMapper.treeToValue(itemNode, BookParsing.class);
-                books.add(bookParsing);
+
+                Book book = new Book();
+                log.info("title={}", itemNode.get("pubdate").asText());
+                book.setTitle(itemNode.get("title").asText());
+                book.setAuthor(itemNode.get("author").asText());
+                book.setDescription(itemNode.get("description").asText());
+                book.setPublisher(itemNode.get("publisher").asText());
+                book.setImage(itemNode.get("image").asText());
+                book.setIsbn(itemNode.get("isbn").asText());
+
+                //20221512를 2022-15-12로 포맷
+                LocalDate date = LocalDate.parse(itemNode.get("pubdate").asText(), DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+                book.setPubdate(date);
+
+
+                books.add(book);
+                bookService.save(book);
             }
 
 
         } catch (Exception e) {
 
         }
-
-        System.out.println(responseBody);
-
         return books;
     }
 

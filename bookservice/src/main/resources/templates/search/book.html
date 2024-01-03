@@ -1,0 +1,138 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head th:replace="fragments/header :: header">
+</head>
+<body>
+  <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+  <section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+      <div class="row gx-4 gx-lg-5 align-items-center">
+        <div class="col-md-3"><img class="img-fluid card-img-top mb-5 mb-md-0" th:src="${book.image}" alt="..."></div>
+        <div class="col-md-9">
+          <div class="small mb-1">
+            <span>ISBN : </span>
+            <span th:text="${book.isbn}"></span>
+          </div>
+          <h1 class="display-9 fw-bolder" th:text="${book.title}">Shop item template</h1>
+          <div class="fs-6 mb-1">
+            <span>저자 : </span>
+            <span class="fw-bolder" th:text="${book.author}"></span>
+          </div>
+          <div class="fs-6 mb-2">
+            <span>출판사 : </span>
+            <span class="fw-bolder" th:text="${book.publisher}"></span>
+<!--            <span> | </span>-->
+<!--            <span class="fw-bolder" th:text="${book.publicationDate}"></span>-->
+          </div>
+          <p th:text="${book.description}" class="lead fs-6"></p>
+          <div class="d-flex">
+<!--            <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem">-->
+            <form th:unless="${isMarked}" th:action="@{/book/bookmark/add/{isbn}(isbn=${book.isbn})}" method="get">
+              <button class="btn btn-outline-dark flex-shrink-0" type="submit" >즐겨찾기 추가</button>
+            </form>
+            <form th:if="${isMarked}" th:action="@{/book/bookmark/remove/{isbn}(isbn=${book.isbn})}" method="get">
+              <button class="btn btn-outline-dark flex-shrink-0" type="submit" >즐겨찾기 제거</button>
+            </form>
+<!--            <button th:onclick="|location.href='@{/book/bookmark/{isbn}(isbn=${book.isbn})}'|" class="btn btn-outline-dark flex-shrink-0" type="button">-->
+<!--              <i class="bi-cart-fill me-1"></i>-->
+<!--              즐겨찾기-->
+<!--            </button>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="container">
+    <div class="row bootstrap snippets bootdeys">
+      <div class="col-md-12 col-sm-12">
+        <div class="comment-wrapper">
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              한줄 평
+            </div>
+            <div class="panel-body">
+              <form th:action="@{/search/book/review}" method="get">
+                <textarea th:if="${isLogin}" name="review" class="form-control" placeholder="한줄평을 남겨보세요." rows="3"></textarea>
+                <textarea disabled th:unless="${isLogin}" name="review" class="form-control" placeholder="로그인 하십시오." rows="3"></textarea>
+<!--                <textarea  name="review" class="form-control" placeholder="로그인 하십시오." rows="3"></textarea>-->
+                <br>
+<!--                숨겨서 보낼 필요 없이 pathVariable로 보내면 되겠구나.-->
+<!--                  잘 안돼서 그냥 숨겨서 보냄.-->
+                <input type="hidden" name="isbn" th:value="${book.isbn}" />
+                <button th:if="${isLogin}" type="submit" class="btn btn-info pull-right">Post</button>
+              </form>
+              <div class="clearfix"></div>
+              <hr>
+              <ul class="media-list">
+                <li class="media" th:each="review : ${reviews}">
+                  <a href="#" class="pull-left">
+                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+                  </a>
+                  <div class="media-body">
+                                <span class="text-muted pull-right">
+                                    <small class="text-muted" th:text="${review.writeDate}">작성시간</small>
+                                </span>
+                    <strong class="text-success" th:text="${review.member.name}">작성자.</strong>
+                    <p th:text="${review.text}">
+                      텍스트
+                    </p>
+                    <div th:if="${user != null}">
+                      <button th:if="${review.member.id == user.id}" th:attr="data-review-index=${review.reviewIndex} , data-book-isbn=${book.isbn}" th:onclick="confirmDelete(this)"
+                              type="submit" class="btn btn-info pull-right">삭제</button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div th:replace="fragments/footer :: footer"></div>
+</body>
+<script th:inline="javascript">
+  function confirmDelete(button) {
+
+      var reviewIndex = button.getAttribute('data-review-index');
+      var bookIsbn = button.getAttribute('data-book-isbn');
+
+      var result = confirm("댓글을 삭제하시겠습니까?");
+
+      if(result) {
+        deleteReview(reviewIndex, bookIsbn);
+      } else {
+
+      }
+  }
+
+  function deleteReview(reviewIndex, isbn) {
+
+    alert("/search/book/review/delete/" + reviewIndex);
+
+    fetch("/search/book/review/delete/" + reviewIndex, {
+      method: "DELETE",
+      headers: {
+        "Content-Type" : "application/json"
+      },
+    })
+    .then(response => {
+      if(!response.ok) {
+        throw new Error("댓글 삭제에 실패했습니다.");
+      }
+        return response.text();
+    })
+    .then(data => {
+      alert(data);
+      window.location.replace("/search/book/" + isbn);
+    })
+    .catch(error => {
+        // 에러 처리
+        console.error(error);
+        alert("댓글 삭제에 실패했습니다.");
+    });
+
+  }
+</script>
+</html>

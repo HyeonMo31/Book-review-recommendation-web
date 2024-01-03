@@ -2,7 +2,7 @@ package com.web.bookservice.controller;
 
 import com.web.bookservice.domain.LoginMember;
 import com.web.bookservice.domain.Member;
-import com.web.bookservice.service.BookService;
+import com.web.bookservice.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final BookService bookService;
+    private final MemberService memberService;
 
     @GetMapping("/login")
     public String loginForm(@ModelAttribute("loginMember")LoginMember loginMember) {
@@ -37,7 +37,7 @@ public class MemberController {
             return "user/login";
         }
 
-        Member member = bookService.login(loginMember.getId(), loginMember.getPassword());
+        Member member = memberService.login(loginMember.getId(), loginMember.getPassword());
         //rejecValue 안쓰면 에러코드 다음에 바로 디폴트 메시지 가능이구먼.
         if(member == null) {
 
@@ -47,9 +47,9 @@ public class MemberController {
 
         HttpSession session = request.getSession();
 
-        //세션이름을 뭘로 해야될까나?
-        session.setAttribute("user",loginMember);
 
+        //세션이름을 뭘로 해야될까나?
+        session.setAttribute("user",member);
 
         return "redirect:/";
     }
@@ -68,7 +68,7 @@ public class MemberController {
         }
 
         try {
-            bookService.join(member);
+            memberService.join(member);
             redirectAttributes.addFlashAttribute("successMessage", "회원가입이 완료 되었습니다.");
         } catch (IllegalStateException e) {
             result.rejectValue("id", null, null, "이미 존재하는 아이디입니다.");
@@ -82,6 +82,7 @@ public class MemberController {
 
         HttpSession session = request.getSession(false);
         if (session != null) {
+            log.info("세션 삭제? 된건가?");
             session.invalidate();
         }
         return "redirect:/";
