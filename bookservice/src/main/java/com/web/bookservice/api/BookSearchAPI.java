@@ -49,7 +49,7 @@ public class BookSearchAPI {
         }
 
         String apiURL = "https://openapi.naver.com/v1/search/book?query=" + text
-                + "&display=5";    // JSON 결과
+                + "&display=12";    // JSON 결과
 
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("X-Naver-Client-Id", clientId);

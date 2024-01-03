@@ -85,7 +85,7 @@ public class SearchController {
     }
 
     @GetMapping("/search/book/{isbn}")
-    public String searchBookAndReview(@PathVariable("isbn") String isbn, Model model, HttpServletRequest request) {
+    public String bookDetail(@PathVariable("isbn") String isbn, Model model, HttpServletRequest request) {
 
         boolean isMarked;
 
@@ -128,10 +128,9 @@ public class SearchController {
         return "search/book";
     }
 
-    @GetMapping("/search/book/review")
-    public String addReview(@RequestParam("isbn") String isbn, @RequestParam("review")String review,
+    @PostMapping("/search/book/review/add/{isbn}")
+    public String addReview(@PathVariable(name = "isbn") String isbn, @RequestParam("review")String review,
                             HttpServletRequest request, RedirectAttributes redirectAttributes) {
-
 
         Book book = bookService.findBookByIsbn(isbn);
         Member member = (Member) request.getSession(false).getAttribute("user");
@@ -172,9 +171,9 @@ public class SearchController {
         Book book = bookService.findBookByIsbn(isbn);
 
 //        리스트를 이렇게 가져오는 것중에 어떤것이 나은 방법일까나?
-//        List<Review> reviews = book.getReviews();
+        List<Review> reviews = book.getReviews();
 //        List<Review> reviews = new ArrayList<>(book.getReviews());
-        List<Review> reviews = reviewService.getReviewsByBook(book);
+//        List<Review> reviews = reviewService.getReviewsByBook(book);
 
 
         bookMarkService.save(book, member);
@@ -195,15 +194,13 @@ public class SearchController {
         Book book = bookService.findBookByIsbn(isbn);
 
 
-//        List<Review> reviews = book.getReviews();
+        List<Review> reviews = book.getReviews();
 //        List<Review> reviews = new ArrayList<>(book.getReviews());
-        List<Review> reviews = reviewService.getReviewsByBook(book);
+//        List<Review> reviews = reviewService.getReviewsByBook(book);
 
 
         bookMarkService.removeBookmark(book, member);
 
-//        redirectAttributes.addAttribute("reviews", reviews);
-//        redirectAttributes.addAttribute("book", book);
         redirectAttributes.addAttribute("isbn", isbn);
 
         return  "redirect:/search/book/{isbn}";

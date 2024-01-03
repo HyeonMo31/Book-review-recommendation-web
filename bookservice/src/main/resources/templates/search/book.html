@@ -21,22 +21,15 @@
           <div class="fs-6 mb-2">
             <span>출판사 : </span>
             <span class="fw-bolder" th:text="${book.publisher}"></span>
-<!--            <span> | </span>-->
-<!--            <span class="fw-bolder" th:text="${book.publicationDate}"></span>-->
           </div>
           <p th:text="${book.description}" class="lead fs-6"></p>
           <div class="d-flex">
-<!--            <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem">-->
             <form th:unless="${isMarked}" th:action="@{/book/bookmark/add/{isbn}(isbn=${book.isbn})}" method="get">
               <button class="btn btn-outline-dark flex-shrink-0" type="submit" >즐겨찾기 추가</button>
             </form>
             <form th:if="${isMarked}" th:action="@{/book/bookmark/remove/{isbn}(isbn=${book.isbn})}" method="get">
               <button class="btn btn-outline-dark flex-shrink-0" type="submit" >즐겨찾기 제거</button>
             </form>
-<!--            <button th:onclick="|location.href='@{/book/bookmark/{isbn}(isbn=${book.isbn})}'|" class="btn btn-outline-dark flex-shrink-0" type="button">-->
-<!--              <i class="bi-cart-fill me-1"></i>-->
-<!--              즐겨찾기-->
-<!--            </button>-->
           </div>
         </div>
       </div>
@@ -51,14 +44,14 @@
               한줄 평
             </div>
             <div class="panel-body">
-              <form th:action="@{/search/book/review}" method="get">
-                <textarea th:if="${isLogin}" name="review" class="form-control" placeholder="한줄평을 남겨보세요." rows="3"></textarea>
-                <textarea disabled th:unless="${isLogin}" name="review" class="form-control" placeholder="로그인 하십시오." rows="3"></textarea>
-<!--                <textarea  name="review" class="form-control" placeholder="로그인 하십시오." rows="3"></textarea>-->
+              <form th:action="@{/search/book/review/add/{isbn}(isbn=${book.isbn})}" method="post">
+
+                <textarea th:if="${isLogin}" name="review" class="form-control" placeholder="한줄평을 남겨보세요." rows="1"></textarea>
+                <textarea disabled th:unless="${isLogin}" name="review" class="form-control" placeholder="로그인 하십시오." rows="1"></textarea>
                 <br>
 <!--                숨겨서 보낼 필요 없이 pathVariable로 보내면 되겠구나.-->
 <!--                  잘 안돼서 그냥 숨겨서 보냄.-->
-                <input type="hidden" name="isbn" th:value="${book.isbn}" />
+<!--                <input type="hidden" name="isbn" th:value="${book.isbn}" />-->
                 <button th:if="${isLogin}" type="submit" class="btn btn-info pull-right">Post</button>
               </form>
               <div class="clearfix"></div>
