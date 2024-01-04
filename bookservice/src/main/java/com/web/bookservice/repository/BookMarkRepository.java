@@ -7,6 +7,8 @@ import com.web.bookservice.repository.jpa.SpringDataJpaBookMarkRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class BookMarkRepository {
@@ -29,6 +31,8 @@ public class BookMarkRepository {
         repository.delete(bookmark);
     }
 
-
+    public List<Bookmark> findByMember(Member member) {
+        return repository.findByMember(member);
+    }
 
 }

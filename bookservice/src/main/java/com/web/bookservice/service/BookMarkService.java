@@ -6,9 +6,13 @@ import com.web.bookservice.domain.Member;
 import com.web.bookservice.repository.BookMarkRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BookMarkService {
 
     private final BookMarkRepository repository;
@@ -43,6 +47,10 @@ public class BookMarkService {
         Bookmark bookmark = findByMemberAndBook(book, member);
 
         repository.removeBookmark(bookmark);
+    }
+
+    public List<Bookmark> findByMember(Member member) {
+        return repository.findByMember(member);
     }
 
 

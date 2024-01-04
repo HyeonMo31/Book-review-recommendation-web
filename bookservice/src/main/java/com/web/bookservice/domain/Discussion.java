@@ -1,6 +1,9 @@
 package com.web.bookservice.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Getter @Setter
+@Data
 public class Discussion {
 
     @Id
@@ -21,9 +25,12 @@ public class Discussion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_index")
+    @NotNull(message = "책을 필수로 선택하십시오.")
     private Book book;
 
+    @NotBlank(message = "제목을 입력해 주세요.")
     private String title;
+    @NotBlank(message = "텍스트를 입력해주세요.")
     private String text;
     private LocalDateTime writeDate;
 
