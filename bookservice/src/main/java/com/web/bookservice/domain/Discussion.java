@@ -6,13 +6,15 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Getter @Setter
-@Data
+@ToString
 public class Discussion {
 
     @Id
@@ -30,9 +32,12 @@ public class Discussion {
 
     @NotBlank(message = "제목을 입력해 주세요.")
     private String title;
+
     @NotBlank(message = "텍스트를 입력해주세요.")
+    @Column(columnDefinition = "TEXT")
     private String text;
-    private LocalDateTime writeDate;
+
+    private LocalDate writeDate;
 
     @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL)
     private List<Comment> comments;

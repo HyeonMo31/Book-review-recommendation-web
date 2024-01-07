@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+</head>
+<body>
+
+<div class="container heightCal">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+    <div class="blog-single gray-bg">
+        <div class="container">
+            <div class="row align-items-start">
+                <div class="col-lg-8 m-15px-tb">
+                    <article class="article">
+                        <div class="article-title">
+                            <div class="media">
+                                <div class="avatar">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" title="" alt="">
+                                </div>
+                                <div class="media-body">
+                                    <label th:text="${discussion.get.member.name}">작성자.</label>
+                                    <span th:text="${discussion.get.member.id}">loginId</span>
+                                </div>
+                            </div>
+                            <h2 class="mt-3 text-break" th:text="${discussion.get.title}">책 제목</h2>
+                        </div>
+                        <div class="article-content">
+                            <p class="text-break" style="white-space: pre-wrap; min-height: 200px;" th:text="${discussion.get.text}"></p>
+<!--                            <p>Aenean eleifend ante maecenas pulvinar montes lorem et pede dis dolor pretium donec dictum. Vici consequat justo enim. Venenatis eget adipiscing luctus lorem. Adipiscing veni amet luctus enim sem libero tellus viverra venenatis aliquam. Commodo natoque quam pulvinar elit.</p>-->
+<!--                            <p>Eget aenean tellus venenatis. Donec odio tempus. Felis arcu pretium metus nullam quam aenean sociis quis sem neque vici libero. Venenatis nullam fringilla pretium magnis aliquam nunc vulputate integer augue ultricies cras. Eget viverra feugiat cras ut. Sit natoque montes tempus ligula eget vitae pede rhoncus maecenas consectetuer commodo condimentum aenean.</p>-->
+<!--                            <h4>What are my payment options?</h4>-->
+<!--                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>-->
+<!--                            <blockquote>-->
+<!--                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>-->
+<!--                                <p class="blockquote-footer">Someone famous in <cite title="Source Title">Dick Grayson</cite></p>-->
+<!--                            </blockquote>-->
+<!--                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>-->
+                        </div>
+                    </article>
+
+                    <div class="d-flex justify-content-end mb-3" th:if="${user != null}">
+                        <button th:if="${discussion.get.member.id == user.id}"
+                                type="submit" class="btn btn-primary btn-sm "  th:onclick="|location.href='@{/discussion/update/post/{discussionId}(discussionId=${discussion.get.discussionIndex})}'|">수정</button>
+                        <button th:if="${discussion.get.member.id == user.id}" th:attr="data-discussion-index=${discussion.get.discussionIndex}" th:onclick="confirmDelete(this)"
+                                type="submit" class="btn btn-primary btn-sm mx-2" >삭제</button>
+                    </div>
+
+<!--                    CommentForm-->
+                    <div class="bg-white rounded shadow-sm p-4 mb-5 rating-review-select-page">
+                        <h5 class="mb-4">댓글 작성</h5>
+                        <form th:action="@{/discussion/comment/add/post/{discussionId}(discussionId=${discussion.get.discussionIndex})}" method="post">
+                            <div class="form-group">
+                                <label>Your Comment</label>
+                                <textarea th:if="${isLogin}" name="comment" class="form-control" placeholder="한줄평을 남겨보세요." rows="3"></textarea>
+                                <textarea disabled th:unless="${isLogin}" name="comment" class="form-control" placeholder="로그인 하십시오." rows="3"></textarea>
+                            </div>
+                            <div class="form-group mt-3">
+                                <button th:if="${isLogin}" class="btn btn-primary btn-sm" type="submit"> 작성 </button>
+                            </div>
+                        </form>
+                    </div>
+<!--                    CommentForm-->
+
+<!--                    CommentList-->
+                    <div class="container">
+                        <div th:each="comment : ${comments}" class="media g-mb-30 media-comment">
+                            <img class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Image Description">
+                            <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
+                                <div class="g-mb-15">
+                                    <h5 th:text=${comment.member.name} class="fw-bold h5 g-color-gray-dark-v1 mb-0">이름</h5>
+                                    <span class="g-color-gray-dark-v4 g-font-size-12">5 days ago</span>
+                                </div>
+
+                                <p style="white-space: pre-wrap;" class="text-break" th:text="${comment.text}"></p>
+
+                                <ul class="list-inline d-sm-flex my-0">
+                                    <li class="list-inline-item g-mr-20">
+                                        <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" href="#!">
+                                            <i class="fa fa-thumbs-up g-pos-rel g-top-1 g-mr-3"></i>
+                                            178
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item g-mr-20">
+                                        <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" href="#!">
+                                            <i class="fa fa-thumbs-down g-pos-rel g-top-1 g-mr-3"></i>
+                                            34
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item ml-auto">
+                                        <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" href="#!">
+                                            <i class="fa fa-reply g-pos-rel g-top-1 g-mr-3"></i>
+                                            Reply
+                                        </a>
+                                    </li>
+                                    <div th:if="${user != null}">
+                                        <button th:if="${comment.member.id == user.id}" th:attr="data-comment-index=${comment.commentIndex},
+                                            data-discussion-index=${discussion.get.discussionIndex}" th:onclick="commentDelete(this)"
+                                                type="submit" class="btn btn-primary btn-sm mx-2" >삭제</button>
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 m-15px-tb blog-aside">
+                    <!-- Author -->
+                    <div class="widget widget-author">
+                        <div class="widget-title">
+                            <h3>토론 관련 책</h3>
+                        </div>
+                        <div class="container">
+                            <img style="width:250px; height:300px" th:src="${discussion.get.book.image}" title="" alt="">
+                            <div ><a th:href="@{/search/book/{isbn}(isbn=${discussion.get.book.isbn})}" th:text="${discussion.get.book.title}">책제목</a></div>
+                            <span th:text="'[' + ${discussion.get.book.author} + ']'">저자</span>
+                            <span th:text="'[' + ${discussion.get.book.pubdate} + ']'">출간일</span>
+                            <span th:text="'[' + ${discussion.get.book.isbn} + ']'">isbn</span>
+                        </div>
+                    </div>
+                    <!-- End Author -->
+
+                    <!-- Trending Post -->
+                    <div class="widget widget-post">
+                        <div class="widget-title">
+                            <h3>Trending Now</h3>
+                        </div>
+                        <div class="widget-body">
+
+                        </div>
+                    </div>
+                    <!-- End Trending Post -->
+
+                    <!-- Latest Post -->
+                    <div class="widget widget-latest-post">
+                        <div class="widget-title">
+                            <h3>Latest Post</h3>
+                        </div>
+                        <div class="widget-body">
+                            <div class="latest-post-aside media">
+                                <div class="lpa-left media-body">
+                                    <div class="lpa-title">
+                                        <h5><a href="#">Prevent 75% of visitors from google analytics</a></h5>
+                                    </div>
+                                    <div class="lpa-meta">
+                                        <a class="name" href="#">
+                                            Rachel Roth
+                                        </a>
+                                        <a class="date" href="#">
+                                            26 FEB 2020
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="lpa-right">
+                                    <a href="#">
+                                        <img src="https://www.bootdey.com/image/400x200/FFB6C1/000000" title="" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="latest-post-aside media">
+                                <div class="lpa-left media-body">
+                                    <div class="lpa-title">
+                                        <h5><a href="#">Prevent 75% of visitors from google analytics</a></h5>
+                                    </div>
+                                    <div class="lpa-meta">
+                                        <a class="name" href="#">
+                                            Rachel Roth
+                                        </a>
+                                        <a class="date" href="#">
+                                            26 FEB 2020
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="lpa-right">
+                                    <a href="#">
+                                        <img src="https://www.bootdey.com/image/400x200/FFB6C1/000000" title="" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="latest-post-aside media">
+                                <div class="lpa-left media-body">
+                                    <div class="lpa-title">
+                                        <h5><a href="#">Prevent 75% of visitors from google analytics</a></h5>
+                                    </div>
+                                    <div class="lpa-meta">
+                                        <a class="name" href="#">
+                                            Rachel Roth
+                                        </a>
+                                        <a class="date" href="#">
+                                            26 FEB 2020
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="lpa-right">
+                                    <a href="#">
+                                        <img src="https://www.bootdey.com/image/400x200/FFB6C1/000000" title="" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Latest Post -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+<script th:inline="javascript">
+  function commentDelete(button) {
+
+      var discussionIndex = button.getAttribute('data-discussion-index');
+      var commentIndex = button.getAttribute('data-comment-index');
+
+      var result = confirm("댓글을 삭제하시겠습니까?");
+
+      if(result) {
+        deleteComment(discussionIndex, commentIndex);
+      } else {
+
+      }
+  }
+
+  function deleteComment(discussionIndex, commentIndex) {
+
+    fetch("/discussion/delete/comment/" + commentIndex + "/post/" + discussionIndex, {
+      method: "DELETE",
+      headers: {
+        "Content-Type" : "application/json"
+      },
+    })
+    .then(response => {
+      if(!response.ok) {
+        throw new Error("댓글 삭제에 실패했습니다.");
+      }
+        return response.text();
+    })
+    .then(data => {
+      alert(data);
+      window.location.replace("/discussion/post/" + discussionIndex);
+    })
+    .catch(error => {
+        // 에러 처리
+        console.error(error);
+        alert("댓글 삭제에 실패했습니다.");
+    });
+
+  }
+
+  function confirmDelete(button) {
+
+      var discussionIndex = button.getAttribute('data-discussion-index');
+
+      var result = confirm("작성글을 삭제하시겠습니까?");
+
+      if(result) {
+        deleteDiscussion(discussionIndex);
+      } else {
+
+      }
+  }
+
+  function deleteDiscussion(discussionIndex) {
+
+
+    fetch("/discussion/delete/post/" + discussionIndex, {
+      method: "DELETE",
+      headers: {
+        "Content-Type" : "application/json"
+      },
+    })
+    .then(response => {
+      if(!response.ok) {
+        throw new Error("댓글 삭제에 실패했습니다.");
+      }
+        return response.text();
+    })
+    .then(data => {
+      alert(data);
+      window.location.replace("/discussion/list");
+    })
+    .catch(error => {
+        // 에러 처리
+        console.error(error);
+        alert("댓글 삭제에 실패했습니다.");
+    });
+
+  }
+</script>
+
+</html>

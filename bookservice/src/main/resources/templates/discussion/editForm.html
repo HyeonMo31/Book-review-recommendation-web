@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+</head>
+<body>
+
+<div class="container heightCal">
+  <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+  <div id="contact" class="contact-area section-padding">
+    <div class="container">
+      <div class="section-title text-center">
+        <h1>자유 토론</h1>
+        <p>토론의 주제는 자유이며 책을 한권 선택해야 합니다. 책은 즐겨찾기에 있는 책만 선택이 가능합니다. 즐겨찾기 책이 없다면 추가하고 오십시오.</p>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-7">
+          <div class="contact" >
+            <form class="form" method="post" th:action="@{/discussion/update/post/{discussionId}(discussionId=${discussion.discussionIndex})}">
+              <div class="row mb-5">
+
+                <div class="form-group col-md-6 mb-2" >
+                  <div ><span class="bi bi-person me-2"></span>작성자</div>
+                  <input disabled type="text" th:value="${discussion.member.name}" name="name" class="form-control" style="background: #eee;">
+                </div>
+
+                <div class="form-group col-md-12 mb-2">
+                  <span ><span class="bi bi-archive me-2"></span>제목</span>  <span class="field-error" th:errors="${discussion.title}" />
+                  <input type="text" name="title" th:value="${discussion.title}" class="form-control" placeholder="Subject" style="background: #eee;">
+                </div>
+
+                <div class="form-group col-md-12 mb-2">
+
+<!--                th:object가 도무지 적용이 안된다.-->
+<!--                  <span ><span class="bi bi-book me-2"></span>책 이름</span>-->
+<!--                                    <input type="text" name="subject" class="form-control" placeholder="Subject" required="required" style="background: #eee;">-->
+<!--                  <select th:field="*{book}" class="form-select form-select-sm ">-->
+<!--                    <option  th:text="${book.title}"></option>-->
+<!--                  </select>-->
+
+<!--                    그래서 직접 value와 text를 입력하였다. disabled는 값이 서버로 전송되지 않는 문제가 또 생겼다.. ...-->
+                    <span ><span class="bi bi-book me-2"></span>책 이름</span>
+                    <select disabled class="form-select form-select-sm ">
+                        <option th:text="${discussion.book.title}"> </option>
+                    </select>
+                </div>
+
+<!--                    <span ><span class="bi bi-book me-2"></span>책 이름</span>-->
+<!--                    <input th:value="${discussion.book.title}" class="form-control" readonly>-->
+
+
+                <div class="form-group col-md-12 mb-2">
+                  <span ><span class="bi bi-clipboard me-2"></span>글 작성</span>  <span class="field-error" th:errors="${discussion.text}" />
+                  <textarea rows="16" name="text" th:text="${discussion.text}" class="form-control" placeholder="Your Message" style="background: #eee;"></textarea>
+                </div>
+
+                <div class="col-md-12 text-center">
+                  <button type="submit" value="Send message" name="submit" id="submitButton" class="btn btn-contact-bg" title="Submit Your Message!">작성</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div><!--- END COL -->
+      </div><!--- END ROW -->
+    </div><!--- END CONTAINER -->
+  </div>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

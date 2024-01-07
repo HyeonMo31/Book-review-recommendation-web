@@ -22,7 +22,9 @@ public class Comment {
     @JoinColumn(name = "member_index")
     private Member member;
 
+    @Column(columnDefinition = "TEXT")
     private String text;
+    
     private LocalDateTime writeDate;
 
 

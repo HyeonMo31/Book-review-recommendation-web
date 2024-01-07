@@ -18,7 +18,7 @@
                                 <line x1="12" y1="5" x2="12" y2="19"></line>
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                             </svg>
-                            NEW DISCUSSION
+                            글 작성
                         </button>
                     </div>
                     <!-- /Inner sidebar header -->
@@ -34,8 +34,7 @@
                                             <div class="simplebar-content" style="padding: 16px;">
                                                 <nav class="nav nav-pills nav-gap-y-1 flex-column">
                                                     <a href="javascript:void(0)" class="nav-link nav-link-faded has-icon active">All</a>
-                                                    <a href="javascript:void(0)" class="nav-link nav-link-faded has-icon">Active</a>
-                                                    <a href="javascript:void(0)" class="nav-link nav-link-faded has-icon">InActive</a>
+                                                    <a href="javascript:void(0)" class="nav-link nav-link-faded has-icon">My Discussion</a>
                                                 </nav>
                                             </div>
                                         </div>
@@ -84,7 +83,76 @@
 
                     <!-- Inner main body -->
 
-
+                    <div class="container ms-2 my-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <h5 class="card-title">Contact List <span th:text="'(' + ${discussions.size} + ')'" class="text-muted fw-normal ms-2">사이즈.</span></h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="">
+                                    <div class="table-responsive">
+                                        <table class="table project-list-table table-nowrap align-middle table-borderless">
+                                            <thead>
+                                            <tr class="text-center">
+                                                <th scope="col" class="ps-4" style="width: 50px;">
+<!--                                                    <div class="form-check font-size-16"><input type="checkbox" class="form-check-input" id="contacusercheck" /><label class="form-check-label" for="contacusercheck"></label></div>-->
+                                                    Id
+                                                </th>
+                                                <th scope="col">제목</th>
+                                                <th scope="col">책 이름</th>
+                                                <th scope="col">작성자</th>
+                                                <th scope="col">작성일</th>
+                                                <th scope="col">조회수</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="text-center" th:each="discussion : ${discussions}">
+                                                <th scope="row" class="ps-4">
+<!--                                                    <div class="form-check font-size-16"><input type="checkbox" class="form-check-input" id="contacusercheck9" /><label class="form-check-label" for="contacusercheck9"></label></div>-->
+                                                    <div th:text="${discussion.discussionIndex}"></div>
+                                                </th>
+                                                <td> <a th:href="@{/discussion/post/{discussionIndex}(discussionIndex=${discussion.discussionIndex})}"
+                                                   th:text="${discussion.title}" class="text-body">제목</a></td>
+                                                <td><a th:href="@{/search/book/{isbn}(isbn=${discussion.book.isbn})}">
+                                                    <span th:text="${discussion.book.title}" class="badge badge-soft-success mb-0">책 이름</span></a>
+                                                </td>
+                                                <td><span th:text="${discussion.member.name}"></span></td>
+                                                <td><span th:text="${discussion.writeDate}"></span></td>
+                                                <td> <span>1</span> </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-0 align-items-center pb-4">
+                            <div class="col-sm-6">
+                                <div><p class="mb-sm-0">Showing 1 to 10 of 57 entries</p></div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="float-sm-end">
+                                    <ul class="pagination mb-sm-0">
+                                        <li class="page-item disabled">
+                                            <a href="#" class="page-link"><i class="mdi mdi-chevron-left"></i></a>
+                                        </li>
+                                        <li class="page-item active"><a href="#" class="page-link">1</a></li>
+                                        <li class="page-item"><a href="#" class="page-link">2</a></li>
+                                        <li class="page-item"><a href="#" class="page-link">3</a></li>
+                                        <li class="page-item"><a href="#" class="page-link">4</a></li>
+                                        <li class="page-item"><a href="#" class="page-link">5</a></li>
+                                        <li class="page-item">
+                                            <a href="#" class="page-link"><i class="mdi mdi-chevron-right"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- /Inner main body -->
                 </div>
                 <!-- /Inner main -->
