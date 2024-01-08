@@ -10,6 +10,7 @@ import com.web.bookservice.service.DiscussionService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,14 +43,45 @@ public class DiscussionController {
     }
 
     @GetMapping("/discussion/list")
-    public String discussionList(Model model) {
+    public String discussionList(@RequestParam(defaultValue = "0", name = "page")int page,
+            @RequestParam(name = "select", required = false) String select,
+            @RequestParam(name = "query", required = false) String query,
+            @RequestParam(name = "myDiscussion", required = false) boolean myDiscussion,
+                                 HttpServletRequest request,
+                                 Model model) {
 
-        List<Discussion> discussions = discussionService.findAll();
+        int pageSize = 10;
 
-        model.addAttribute("discussions", discussions);
+        log.info("myDiscussion={}", myDiscussion);
+
+        Page<Discussion> pageResult;
+
+        if(myDiscussion) {
+
+            Member member = (Member)request.getSession(false).getAttribute("user");
+            pageResult = discussionService.getDataByPageAndMember(member.getId(),select, query ,page, pageSize);
+        } else {
+            pageResult = discussionService.getDataByPage(select, query ,page, pageSize);
+        }
+
+
+
+        long start = pageResult.getPageable().getOffset()+1;
+        long end = (start - 1) + pageResult.getNumberOfElements();
+        log.info("start={}", start);
+
+        //페이지 개수 넘겨야 되니까.
+
+        model.addAttribute("pageCount", pageResult.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("discussions", pageResult);
+        model.addAttribute("totalSize", pageResult.getTotalElements());
+        model.addAttribute("start", start);
+        model.addAttribute("end", end);
 
         return "discussion/discussionList";
     }
+
 
     @GetMapping("/discussion/add")
 //    @Transactional
