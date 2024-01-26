@@ -39,15 +39,15 @@
 
                     <div class="d-flex justify-content-end mb-3" th:if="${user != null}">
                         <button th:if="${discussion.get.member.id == user.id}"
-                                type="submit" class="btn btn-primary btn-sm "  th:onclick="|location.href='@{/discussion/update/post/{discussionId}(discussionId=${discussion.get.discussionIndex})}'|">수정</button>
-                        <button th:if="${discussion.get.member.id == user.id}" th:attr="data-discussion-index=${discussion.get.discussionIndex}" th:onclick="confirmDelete(this)"
+                                type="submit" class="btn btn-primary btn-sm "  th:onclick="|location.href='@{/discussion/update/post/{discussionId}(discussionId=${discussion.get.id})}'|">수정</button>
+                        <button th:if="${discussion.get.member.id == user.id}" th:attr="data-discussion-id=${discussion.get.id}" th:onclick="confirmDelete(this)"
                                 type="submit" class="btn btn-primary btn-sm mx-2" >삭제</button>
                     </div>
 
 <!--                    CommentForm-->
                     <div class="bg-white rounded shadow-sm p-4 mb-5 rating-review-select-page">
                         <h5 class="mb-4">댓글 작성</h5>
-                        <form th:action="@{/discussion/comment/add/post/{discussionId}(discussionId=${discussion.get.discussionIndex})}" method="post">
+                        <form th:action="@{/discussion/comment/add/post/{discussionId}(discussionId=${discussion.get.id})}" method="post">
                             <div class="form-group">
                                 <label>Your Comment</label>
                                 <textarea th:if="${isLogin}" name="comment" class="form-control" placeholder="한줄평을 남겨보세요." rows="3"></textarea>
@@ -92,8 +92,8 @@
                                         </a>
                                     </li>
                                     <div th:if="${user != null}">
-                                        <button th:if="${comment.member.id == user.id}" th:attr="data-comment-index=${comment.commentIndex},
-                                            data-discussion-index=${discussion.get.discussionIndex}" th:onclick="commentDelete(this)"
+                                        <button th:if="${comment.member.id == user.id}" th:attr="data-comment-id=${comment.id},
+                                            data-discussion-id=${discussion.get.id}" th:onclick="commentDelete(this)"
                                                 type="submit" class="btn btn-primary btn-sm mx-2" >삭제</button>
                                     </div>
                                 </ul>
@@ -207,21 +207,21 @@
 <script th:inline="javascript">
   function commentDelete(button) {
 
-      var discussionIndex = button.getAttribute('data-discussion-index');
-      var commentIndex = button.getAttribute('data-comment-index');
+      var discussionId = button.getAttribute('data-discussion-id');
+      var commentId = button.getAttribute('data-comment-id');
 
       var result = confirm("댓글을 삭제하시겠습니까?");
 
       if(result) {
-        deleteComment(discussionIndex, commentIndex);
+        deleteComment(discussionId, commentId);
       } else {
 
       }
   }
 
-  function deleteComment(discussionIndex, commentIndex) {
+  function deleteComment(discussionId, commentId) {
 
-    fetch("/discussion/delete/comment/" + commentIndex + "/post/" + discussionIndex, {
+    fetch("/discussion/delete/comment/" + commentId + "/post/" + discussionId, {
       method: "DELETE",
       headers: {
         "Content-Type" : "application/json"
@@ -235,7 +235,7 @@
     })
     .then(data => {
       alert(data);
-      window.location.replace("/discussion/post/" + discussionIndex);
+      window.location.replace("/discussion/post/" + discussionId);
     })
     .catch(error => {
         // 에러 처리
@@ -247,21 +247,21 @@
 
   function confirmDelete(button) {
 
-      var discussionIndex = button.getAttribute('data-discussion-index');
+      var discussionId = button.getAttribute('data-discussion-id');
 
       var result = confirm("작성글을 삭제하시겠습니까?");
 
       if(result) {
-        deleteDiscussion(discussionIndex);
+        deleteDiscussion(discussionId);
       } else {
 
       }
   }
 
-  function deleteDiscussion(discussionIndex) {
+  function deleteDiscussion(discussionId) {
 
 
-    fetch("/discussion/delete/post/" + discussionIndex, {
+    fetch("/discussion/delete/post/" + discussionId, {
       method: "DELETE",
       headers: {
         "Content-Type" : "application/json"

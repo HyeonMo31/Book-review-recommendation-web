@@ -1,9 +1,7 @@
 package com.web.bookservice.controller;
 
-import com.web.bookservice.api.BookParsing;
 import com.web.bookservice.api.BookSearchAPI;
 import com.web.bookservice.domain.Book;
-import com.web.bookservice.domain.Bookmark;
 import com.web.bookservice.domain.Member;
 import com.web.bookservice.domain.Review;
 import com.web.bookservice.service.BookMarkService;
@@ -11,9 +9,7 @@ import com.web.bookservice.service.BookService;
 import com.web.bookservice.service.ReviewService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,9 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,12 +83,12 @@ public class SearchController {
         boolean isMarked;
 
         //책 클릭시 책에 대한 정보 찾아서 모델에 넘기기.
-        Book book= bookService.findBookByIsbn(isbn);
+        Book book= bookService.findByIsbn(isbn);
 
         //책 클릭시 책의 리뷰에 대한 정보 찾아서 모델에 넘기기
 //        List<Review> reviews = book.getReviews();
 //        List<Review> reviews = new ArrayList<>(book.getReviews());
-        List<Review> reviews = reviewService.getReviewsByBook(book);
+        List<Review> reviews = reviewService.findByBook(book);
 
         //책 클릭시 즐겨찾기 여부에 대한 정보를 찾아야한다.
 
@@ -132,7 +125,7 @@ public class SearchController {
     public String addReview(@PathVariable(name = "isbn") String isbn, @RequestParam("review")String review,
                             HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
-        Book book = bookService.findBookByIsbn(isbn);
+        Book book = bookService.findByIsbn(isbn);
         Member member = (Member) request.getSession(false).getAttribute("user");
 
         reviewService.save(book, member, review);
@@ -150,7 +143,8 @@ public class SearchController {
     public ResponseEntity<String> deleteReview(@PathVariable("reviewIndex") Long reviewIndex) {
 
         try {
-            reviewService.deleteReview(reviewIndex);
+            Review review = reviewService.findById(reviewIndex);
+            reviewService.deleteReview(review);
             return ResponseEntity.ok("리뷰가 삭제되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생하였습니다.");
@@ -168,10 +162,10 @@ public class SearchController {
         //필터가 먼저 작동하여 로그인이 되어 있지않으면 로그인 화면으로 이동하게 해준다.
 
         Member member = (Member) request.getSession(false).getAttribute("user");
-        Book book = bookService.findBookByIsbn(isbn);
+        Book book = bookService.findByIsbn(isbn);
 
 //        리스트를 이렇게 가져오는 것중에 어떤것이 나은 방법일까나?
-        List<Review> reviews = book.getReviews();
+        List<Review> reviews = reviewService.findByBook(book);
 //        List<Review> reviews = new ArrayList<>(book.getReviews());
 //        List<Review> reviews = reviewService.getReviewsByBook(book);
 
@@ -191,10 +185,10 @@ public class SearchController {
     public String removeBookmark(@PathVariable("isbn")String isbn, HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
         Member member = (Member)request.getSession(false).getAttribute("user");
-        Book book = bookService.findBookByIsbn(isbn);
+        Book book = bookService.findByIsbn(isbn);
 
 
-        List<Review> reviews = book.getReviews();
+        List<Review> reviews = reviewService.findByBook(book);
 //        List<Review> reviews = new ArrayList<>(book.getReviews());
 //        List<Review> reviews = reviewService.getReviewsByBook(book);
 

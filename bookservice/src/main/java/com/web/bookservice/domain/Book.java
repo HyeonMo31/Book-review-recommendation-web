@@ -19,7 +19,7 @@ public class Book {
 
     @Id
     @GeneratedValue
-    private Long bookIndex;
+    private Long id;
     private String title;
 
     //      Column 애너테이션의 length를 설정하지 않으면, default로 CHARACTER VARYING(255)로 설정되는 것 같다.
@@ -40,12 +40,5 @@ public class Book {
 //    @JsonFormat(pattern = "yyyyMMdd")
     private LocalDate pubdate;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-    private List<Review> reviews;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-    private List<Discussion> discussions;
-
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-    private List<Bookmark> bookmarks;
 }

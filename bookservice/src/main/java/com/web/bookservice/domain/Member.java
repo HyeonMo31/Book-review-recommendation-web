@@ -15,27 +15,17 @@ public class Member {
 
     @Id
     @GeneratedValue
-    private Long memberIndex;
+    private Long id;
 
     @NotBlank
     private String name;
     @NotBlank
-    private String id;
+    private String loginId;
     @NotBlank
     private String password;
 
     private LocalDateTime joinDate;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Review> reviews;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Discussion> discussions;
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Comment> comments;
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Bookmark> bookmarks;
 
 }

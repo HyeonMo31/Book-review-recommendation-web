@@ -4,14 +4,11 @@ import com.web.bookservice.domain.Book;
 import com.web.bookservice.domain.Bookmark;
 import com.web.bookservice.domain.Discussion;
 import com.web.bookservice.domain.Member;
-import com.web.bookservice.repository.BookMarkRepository;
-import com.web.bookservice.repository.BookRepository;
-import com.web.bookservice.repository.DiscussionRepository;
-import com.web.bookservice.repository.MemberRepository;
+import com.web.bookservice.repository.jpa.BookMarkRepository;
+import com.web.bookservice.repository.jpa.BookRepository;
+import com.web.bookservice.repository.jpa.DiscussionRepository;
+import com.web.bookservice.repository.jpa.MemberRepository;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -36,7 +33,7 @@ public class TestDataInit {
     public void testDataAdd() {
 
         Member member = new Member();
-        member.setId("thesting31");
+        member.setLoginId("thesting31");
         member.setName("정현모");
         member.setPassword("31");
 

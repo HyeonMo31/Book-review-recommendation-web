@@ -14,14 +14,14 @@ public class Review {
 
     @Id
     @GeneratedValue
-    private Long reviewIndex;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_index")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="book_index")
+    @JoinColumn(name ="book_id")
     private Book book;
 
     private int startCount;

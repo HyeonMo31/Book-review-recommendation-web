@@ -8,7 +8,6 @@ import com.web.bookservice.service.BookMarkService;
 import com.web.bookservice.service.CommentService;
 import com.web.bookservice.service.DiscussionService;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -21,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +43,7 @@ public class DiscussionController {
     public String discussionList(@RequestParam(defaultValue = "0", name = "page")int page,
             @RequestParam(name = "select", required = false) String select,
             @RequestParam(name = "query", required = false) String query,
-            @RequestParam(name = "myDiscussion", required = false) boolean myDiscussion,
+            @RequestParam(name = "myDiscussion", required = false, defaultValue = "false") boolean myDiscussion,
                                  HttpServletRequest request,
                                  Model model) {
 
@@ -59,7 +56,7 @@ public class DiscussionController {
         if(myDiscussion) {
 
             Member member = (Member)request.getSession(false).getAttribute("user");
-            pageResult = discussionService.getDataByPageAndMember(member.getId(),select, query ,page, pageSize);
+            pageResult = discussionService.getDataByPageAndMember(member.getLoginId(),select, query ,page, pageSize);
         } else {
             pageResult = discussionService.getDataByPage(select, query ,page, pageSize);
         }
@@ -80,6 +77,13 @@ public class DiscussionController {
         model.addAttribute("end", end);
 
         return "discussion/discussionList";
+    }
+
+    @GetMapping("/discussion/myList")
+    public String discussionMyList(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addAttribute("myDiscussion", true);
+
+        return "redirect:/discussion/list";
     }
 
 
@@ -111,7 +115,6 @@ public class DiscussionController {
         discussion.setWriteDate(LocalDate.now());
         Long discussionId = discussionService.save(discussion);
 
-        log.info("dissid={}", discussionId);
 
         redirectAttributes.addAttribute("discussionId", discussionId);
 
@@ -122,15 +125,12 @@ public class DiscussionController {
     public String postDetail(@PathVariable(name = "discussionId")Long discussionId, Model model) {
 
         //토론 상세내용
-        Optional<Discussion> discussion = discussionService.findById(discussionId);
+        Discussion discussion = discussionService.findById(discussionId);
 
-            List<Comment> comments;
+        List<Comment> comments;
         //토론 댓글 리스트.
-        if(discussion.isPresent()) {
-             comments = discussion.get().getComments();;
-        } else {
-            comments = null;
-        }
+        comments = commentService.findByDiscussoin(discussion);
+
 
 
         model.addAttribute("comments", comments);
@@ -146,7 +146,7 @@ public class DiscussionController {
 
         //코멘트 저장하기
         Member member = (Member) request.getSession(false).getAttribute("user");
-        Optional<Discussion> discussion = discussionService.findById(discussionId);
+        Discussion discussion = discussionService.findById(discussionId);
 
         commentService.save(discussion ,member, text);
 
@@ -160,7 +160,8 @@ public class DiscussionController {
     public ResponseEntity<String> deleteDiscussion(@PathVariable("discussionId") Long discussionId) {
 
         try {
-            discussionService.deleteDiscussion(discussionId);
+            Discussion discussion = discussionService.findById(discussionId);
+            discussionService.deleteDiscussion(discussion);
             return ResponseEntity.ok("글이 삭제되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생하였습니다.");
@@ -171,27 +172,9 @@ public class DiscussionController {
     @GetMapping("/discussion/update/post/{discussionId}")
     public String editFormDiscussion(@PathVariable("discussionId") Long discussionId, Model model) {
 
-        Optional<Discussion> findDiscussion = discussionService.findById(discussionId);
-//
-//        String text = discussion.get().getText();
-//        String title = discussion.get().getTitle();
-//
-//        model.addAttribute("title", title);
-//        model.addAttribute("text", text);
-        if(findDiscussion.isPresent()) {
-            log.info("존재한다.");
-            Discussion discussion = findDiscussion.get();
+        Discussion discussion = discussionService.findById(discussionId);
 
-            log.info("discussio={}", discussion.getText());
-            log.info("discussio={}", discussion.getTitle());
-
-
-            model.addAttribute("discussion", discussion);
-        } else {
-            log.info("존재하지 않는다.");
-        }
-
-
+        model.addAttribute("discussion", discussion);
 
         return "discussion/editForm";
 
@@ -213,7 +196,8 @@ public class DiscussionController {
     public ResponseEntity<String> deleteComment(@PathVariable("commentIndex")Long commentIndex, @PathVariable("discussionIndex") Long discussionIndex) {
 
         try {
-            commentService.deleteComment(commentIndex);
+            Comment comment = commentService.findByComment(commentIndex);
+            commentService.deleteComment(comment);
             return ResponseEntity.ok("댓글이 삭제 되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생하였습니다.");

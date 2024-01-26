@@ -70,7 +70,7 @@
                       텍스트
                     </p>
                     <div th:if="${user != null}">
-                      <button th:if="${review.member.id == user.id}" th:attr="data-review-index=${review.reviewIndex} , data-book-isbn=${book.isbn}" th:onclick="confirmDelete(this)"
+                      <button th:if="${review.member.id == user.id}" th:attr="data-review-id=${review.id} , data-book-isbn=${book.isbn}" th:onclick="confirmDelete(this)"
                               type="submit" class="btn btn-info pull-right">삭제</button>
                     </div>
                   </div>
@@ -88,23 +88,23 @@
 <script th:inline="javascript">
   function confirmDelete(button) {
 
-      var reviewIndex = button.getAttribute('data-review-index');
+      var reviewId = button.getAttribute('data-review-id');
       var bookIsbn = button.getAttribute('data-book-isbn');
 
       var result = confirm("댓글을 삭제하시겠습니까?");
 
       if(result) {
-        deleteReview(reviewIndex, bookIsbn);
+        deleteReview(reviewId, bookIsbn);
       } else {
 
       }
   }
 
-  function deleteReview(reviewIndex, isbn) {
+  function deleteReview(reviewId, isbn) {
 
-    alert("/search/book/review/delete/" + reviewIndex);
+    alert("/search/book/review/delete/" + reviewId);
 
-    fetch("/search/book/review/delete/" + reviewIndex, {
+    fetch("/search/book/review/delete/" + reviewId, {
       method: "DELETE",
       headers: {
         "Content-Type" : "application/json"

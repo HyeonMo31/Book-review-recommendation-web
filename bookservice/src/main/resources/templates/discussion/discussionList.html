@@ -33,8 +33,8 @@
                                         <div class="simplebar-content-wrapper" style="height: 100%; overflow: hidden;">
                                             <div class="simplebar-content" style="padding: 16px;">
                                                 <nav class="nav nav-pills nav-gap-y-1 flex-column">
-                                                    <a th:href="@{/discussion/list}" class="nav-link nav-link-faded has-icon active">All</a>
-                                                    <a th:href="@{/discussion/list(myDiscussion=${true})}" class="nav-link nav-link-faded has-icon">My Discussion</a>
+                                                    <a th:href="@{/discussion/list}" class="nav-link nav-link-faded has-icon" th:classappend="${param.myDiscussion == null} ? 'active' : ''">All</a>
+                                                    <a th:href="@{/discussion/myList}" class="nav-link nav-link-faded has-icon" th:classappend="${param.myDiscussion != null and not param.myDiscussion.isEmpty()} ? 'active' : ''">My Discussion</a>
                                                 </nav>
                                             </div>
                                         </div>
@@ -76,6 +76,7 @@
                                     <button type="submit" class="btn btn-link text-primary border-top border-end border-bottom"><i class="bi bi-search"></i></button>
                                 </div>
                             </div>
+                            <input th:if="${param.myDiscussion != null and not param.myDiscussion.isEmpty()}" type="hidden" name="myDiscussion" th:value="${param.myDiscussion}" />
                         </form>
 
                     </div>
@@ -113,10 +114,10 @@
                                             <tr class="text-center" th:each="discussion : ${discussions}">
                                                 <th scope="row" class="ps-4">
 <!--                                                    <div class="form-check font-size-16"><input type="checkbox" class="form-check-input" id="contacusercheck9" /><label class="form-check-label" for="contacusercheck9"></label></div>-->
-                                                    <div th:text="${discussion.discussionIndex}"></div>
+                                                    <div th:text="${discussion.id}"></div>
                                                 </th>
-                                                <td> <a th:href="@{/discussion/post/{discussionIndex}(discussionIndex=${discussion.discussionIndex})}"
-                                                   th:text="${discussion.title}" class="text-body">제목</a></td>
+                                                <td> <a th:href="@{/discussion/post/{id}(id=${discussion.id})}"
+                                                   th:text="${discussion.title}" class="text-body">제목</a> <span th:if="${discussion.comments.size > 0}" th:text="'(' +${discussion.comments.size} + ')'"></span></td>
                                                 <td><a th:href="@{/search/book/{isbn}(isbn=${discussion.book.isbn})}">
                                                     <span th:text="${discussion.book.title}" class="badge badge-soft-success mb-0">책 이름</span></a>
                                                 </td>

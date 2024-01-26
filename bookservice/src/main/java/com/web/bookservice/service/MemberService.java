@@ -1,7 +1,7 @@
 package com.web.bookservice.service;
 
 import com.web.bookservice.domain.Member;
-import com.web.bookservice.repository.MemberRepository;
+import com.web.bookservice.repository.jpa.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,16 +17,16 @@ public class MemberService {
 
     public void join(Member member){
 
-        validateDuplicateMember(member.getId());
+        validateDuplicateMember(member.getLoginId());
 
         memberRepository.save(member);
     }
 
     public Member login(String loginId, String password) {
 
-        if(memberRepository.existsMemberById(loginId) ) {
+        if(memberRepository.existsByLoginId(loginId) ) {
 
-            Member findMember = memberRepository.findMemberById(loginId);
+            Member findMember = memberRepository.findByLoginId(loginId);
 //                여기서 계속헤맸지 ㅋㅋ String 비교 !! 제발
 //            if(findMember.getPassword() == password) {
             if(findMember.getPassword().equals(password)) {
@@ -39,12 +39,12 @@ public class MemberService {
     }
 
     public void validateDuplicateMember(String id) {
-        if(memberRepository.existsMemberById(id))
+        if(memberRepository.existsByLoginId(id))
             throw new IllegalStateException("이미 존재하는 아이디 입니다.");
     }
 
-    public Member findMemberByLoginId(String loginId) {
-        return memberRepository.findMemberById(loginId);
+    public Member findByLoginId(String loginId) {
+        return memberRepository.findByLoginId(loginId);
     }
 
 }

@@ -1,9 +1,7 @@
 package com.web.bookservice.service;
 
 import com.web.bookservice.domain.Book;
-import com.web.bookservice.domain.Member;
-import com.web.bookservice.repository.BookRepository;
-import com.web.bookservice.repository.MemberRepository;
+import com.web.bookservice.repository.jpa.BookRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,12 +21,12 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    public Book findBookByIsbn(String isbn) {
-        return bookRepository.findBookByIsbn(isbn);
+    public Book findByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn);
     }
 
     public boolean validateDuplicateBook(String isbn) {
-        if(bookRepository.existsBookByIsbn(isbn)) {
+        if(bookRepository.existsByIsbn(isbn)) {
             return true;
         } else {
             return false;

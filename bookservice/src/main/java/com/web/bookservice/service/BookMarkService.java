@@ -3,7 +3,7 @@ package com.web.bookservice.service;
 import com.web.bookservice.domain.Book;
 import com.web.bookservice.domain.Bookmark;
 import com.web.bookservice.domain.Member;
-import com.web.bookservice.repository.BookMarkRepository;
+import com.web.bookservice.repository.jpa.BookMarkRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +46,7 @@ public class BookMarkService {
 
         Bookmark bookmark = findByMemberAndBook(book, member);
 
-        repository.removeBookmark(bookmark);
+        repository.delete(bookmark);
     }
 
     public List<Bookmark> findByMember(Member member) {

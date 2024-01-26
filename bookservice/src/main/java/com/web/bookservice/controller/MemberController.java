@@ -37,7 +37,7 @@ public class MemberController {
             return "user/login";
         }
 
-        Member member = memberService.login(loginMember.getId(), loginMember.getPassword());
+        Member member = memberService.login(loginMember.getLoginId(), loginMember.getPassword());
         //rejecValue 안쓰면 에러코드 다음에 바로 디폴트 메시지 가능이구먼.
         if(member == null) {
 

@@ -1,8 +1,7 @@
 package com.web.bookservice.service;
 
 import com.web.bookservice.domain.Discussion;
-import com.web.bookservice.domain.Member;
-import com.web.bookservice.repository.DiscussionRepository;
+import com.web.bookservice.repository.jpa.DiscussionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,43 +21,45 @@ public class DiscussionService {
     private final DiscussionRepository repository;
 
     public Long save(Discussion discussion) {
-        return repository.save(discussion);
+        return repository.save(discussion).getId();
     }
 
-    public Optional<Discussion> findById(Long id) {
-        return repository.findById(id);
+    public Discussion findById(Long id) {
+        return repository.findById(id).get();
     }
 
-    public void deleteDiscussion(Long discussionIndex) {
-        repository.deleteDiscussion(discussionIndex);
+    public void deleteDiscussion(Discussion discussion) {
+        repository.delete(discussion);
     }
 
     public void update(Long discussionIndex, String title, String text) {
-        Optional<Discussion> findDiscussion = findById(discussionIndex);
+        Discussion findDiscussion = findById(discussionIndex);
 
-        findDiscussion.get().setTitle(title);
-        findDiscussion.get().setText(text);
+        findDiscussion.setTitle(title);
+        findDiscussion.setText(text);
 
-        repository.save(findDiscussion.get());
+        repository.save(findDiscussion);
     }
+
 
     public List<Discussion> findAll() {
         return repository.findAll();
     }
 
-    public Page<Discussion> getDataByPageAndMember(String memberId,String select, String query, int page, int pageSize) {
+    public Page<Discussion> getDataByPageAndMember(String loginId,String select, String query, int page, int pageSize) {
 
         Pageable pageable = PageRequest.of(page, pageSize);
 
 
         if(select == null) {
-            return repository.getAllDataByPageAndMember(memberId, pageable);
+            log.info("여기");
+            return repository.findByMember_LoginId(loginId, pageable);
         } else if(select.equals("title")){
-            return repository.getTitleByPageAndMember(query, memberId ,pageable);
+            return repository.findByTitleContainingAndMember_LoginId(query,loginId, pageable);
         } else if (select.equals("bookName")) {
-            return repository.getBookTitleByPageAndMember(query,memberId ,pageable);
+            return repository.findByBook_TitleContainingAndMember_LoginId(query, loginId, pageable);
         } else if (select.equals("writer")) {
-            return repository.getMemberNameByPageAndMember(query, memberId ,pageable);
+            return repository.findByMember_NameContainingAndMember_LoginId(query, loginId, pageable);
         }
 
         return  null;
@@ -68,13 +68,13 @@ public class DiscussionService {
     public Page<Discussion> getDataByPage(String select, String query, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         if(select == null) {
-            return repository.getAllDataByPage(pageable);
+            return repository.findAll(pageable);
         } else if(select.equals("title")){
-            return repository.getTitleByPage(query,pageable);
+            return repository.findByTitleContaining(query, pageable);
         } else if (select.equals("bookName")) {
-            return repository.getBookTitleByPage(query, pageable);
+            return repository.findByBook_TitleContaining(query, pageable);
         } else if (select.equals("writer")) {
-            return repository.getMemberNameByPage(query, pageable);
+            return repository.findByMember_NameContaining(query, pageable);
         }
 
         return null;

@@ -32,7 +32,7 @@
                   <span ><span class="bi bi-book me-2"></span>책 이름</span>  <span class="field-error" th:errors="*{book}" />
 <!--                  <input type="text" name="subject" class="form-control" placeholder="Subject" required="required" style="background: #eee;">-->
                   <select th:field="*{book}" class="form-select form-select-sm ">
-                    <option th:each="bookmark : ${bookmarks}" th:value="${bookmark.book.bookIndex}" th:text="${bookmark.book.title}"></option>
+                    <option th:each="bookmark : ${bookmarks}" th:value="${bookmark.book.id}" th:text="${bookmark.book.title}"></option>
                   </select>
                 </div>
 

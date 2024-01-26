@@ -10,6 +10,7 @@ import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,14 +20,14 @@ public class Discussion {
 
     @Id
     @GeneratedValue
-    private Long discussionIndex;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_index")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_index")
+    @JoinColumn(name = "book_id")
     @NotNull(message = "책을 필수로 선택하십시오.")
     private Book book;
 
@@ -40,7 +41,6 @@ public class Discussion {
     private LocalDate writeDate;
 
     @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL)
-    private List<Comment> comments;
-
+    private List<Comment> comments = new ArrayList<>();
 
 }
