@@ -17,14 +17,14 @@
                                     <img src="https://bootdey.com/img/Content/avatar/avatar1.png" title="" alt="">
                                 </div>
                                 <div class="media-body">
-                                    <label th:text="${discussion.get.member.name}">작성자.</label>
-                                    <span th:text="${discussion.get.member.id}">loginId</span>
+                                    <label th:text="${discussion.member.name}">작성자.</label>
+                                    <span th:text="${discussion.member.id}">loginId</span>
                                 </div>
                             </div>
-                            <h2 class="mt-3 text-break" th:text="${discussion.get.title}">책 제목</h2>
+                            <h2 class="mt-3 text-break" th:text="${discussion.title}">책 제목</h2>
                         </div>
                         <div class="article-content">
-                            <p class="text-break" style="white-space: pre-wrap; min-height: 200px;" th:text="${discussion.get.text}"></p>
+                            <p class="text-break" style="white-space: pre-wrap; min-height: 200px;" th:text="${discussion.text}"></p>
 <!--                            <p>Aenean eleifend ante maecenas pulvinar montes lorem et pede dis dolor pretium donec dictum. Vici consequat justo enim. Venenatis eget adipiscing luctus lorem. Adipiscing veni amet luctus enim sem libero tellus viverra venenatis aliquam. Commodo natoque quam pulvinar elit.</p>-->
 <!--                            <p>Eget aenean tellus venenatis. Donec odio tempus. Felis arcu pretium metus nullam quam aenean sociis quis sem neque vici libero. Venenatis nullam fringilla pretium magnis aliquam nunc vulputate integer augue ultricies cras. Eget viverra feugiat cras ut. Sit natoque montes tempus ligula eget vitae pede rhoncus maecenas consectetuer commodo condimentum aenean.</p>-->
 <!--                            <h4>What are my payment options?</h4>-->
@@ -38,16 +38,16 @@
                     </article>
 
                     <div class="d-flex justify-content-end mb-3" th:if="${user != null}">
-                        <button th:if="${discussion.get.member.id == user.id}"
-                                type="submit" class="btn btn-primary btn-sm "  th:onclick="|location.href='@{/discussion/update/post/{discussionId}(discussionId=${discussion.get.id})}'|">수정</button>
-                        <button th:if="${discussion.get.member.id == user.id}" th:attr="data-discussion-id=${discussion.get.id}" th:onclick="confirmDelete(this)"
+                        <button th:if="${discussion.member.id == user.id}"
+                                type="submit" class="btn btn-primary btn-sm "  th:onclick="|location.href='@{/discussion/update/post/{discussionId}(discussionId=${discussion.id})}'|">수정</button>
+                        <button th:if="${discussion.member.id == user.id}" th:attr="data-discussion-id=${discussion.id}" th:onclick="confirmDelete(this)"
                                 type="submit" class="btn btn-primary btn-sm mx-2" >삭제</button>
                     </div>
 
 <!--                    CommentForm-->
                     <div class="bg-white rounded shadow-sm p-4 mb-5 rating-review-select-page">
                         <h5 class="mb-4">댓글 작성</h5>
-                        <form th:action="@{/discussion/comment/add/post/{discussionId}(discussionId=${discussion.get.id})}" method="post">
+                        <form th:action="@{/discussion/comment/add/post/{discussionId}(discussionId=${discussion.id})}" method="post">
                             <div class="form-group">
                                 <label>Your Comment</label>
                                 <textarea th:if="${isLogin}" name="comment" class="form-control" placeholder="한줄평을 남겨보세요." rows="3"></textarea>
@@ -93,7 +93,7 @@
                                     </li>
                                     <div th:if="${user != null}">
                                         <button th:if="${comment.member.id == user.id}" th:attr="data-comment-id=${comment.id},
-                                            data-discussion-id=${discussion.get.id}" th:onclick="commentDelete(this)"
+                                            data-discussion-id=${discussion.id}" th:onclick="commentDelete(this)"
                                                 type="submit" class="btn btn-primary btn-sm mx-2" >삭제</button>
                                     </div>
                                 </ul>
@@ -108,11 +108,11 @@
                             <h3>토론 관련 책</h3>
                         </div>
                         <div class="container">
-                            <img style="width:250px; height:300px" th:src="${discussion.get.book.image}" title="" alt="">
-                            <div ><a th:href="@{/search/book/{isbn}(isbn=${discussion.get.book.isbn})}" th:text="${discussion.get.book.title}">책제목</a></div>
-                            <span th:text="'[' + ${discussion.get.book.author} + ']'">저자</span>
-                            <span th:text="'[' + ${discussion.get.book.pubdate} + ']'">출간일</span>
-                            <span th:text="'[' + ${discussion.get.book.isbn} + ']'">isbn</span>
+                            <img style="width:250px; height:300px" th:src="${discussion.book.image}" title="" alt="">
+                            <div ><a th:href="@{/search/book/{isbn}(isbn=${discussion.book.isbn})}" th:text="${discussion.book.title}">책제목</a></div>
+                            <span th:text="'[' + ${discussion.book.author} + ']'">저자</span>
+                            <span th:text="'[' + ${discussion.book.pubdate} + ']'">출간일</span>
+                            <span th:text="'[' + ${discussion.book.isbn} + ']'">isbn</span>
                         </div>
                     </div>
                     <!-- End Author -->

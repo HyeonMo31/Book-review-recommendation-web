@@ -56,16 +56,16 @@ public class TestDataInit {
 
 
 
-        for(int i = 0; i < 23; i++) {
-            Discussion discussion = new Discussion();
-
-            discussion.setMember(member);
-            discussion.setTitle("이건 뭔");
-            discussion.setText("장비를 정지합니다.");
-            discussion.setWriteDate(LocalDate.now());
-            discussion.setBook(book);
-            discussionRepository.save(discussion);
-        }
+//        for(int i = 0; i < 23; i++) {
+//            Discussion discussion = new Discussion();
+//
+//            discussion.setMember(member);
+//            discussion.setTitle("이건 뭔");
+//            discussion.setText("장비를 정지합니다.");
+//            discussion.setWriteDate(LocalDate.now());
+//            discussion.setBook(book);
+//            discussionRepository.save(discussion);
+//        }
 
 
 
