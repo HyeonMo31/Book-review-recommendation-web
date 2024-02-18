@@ -88,10 +88,13 @@ public class MemberController {
         return "redirect:/";
     }
 
-    @GetMapping("/mypage")
-    public String mypageForm(@ModelAttribute Member member, Model model, HttpServletRequest request) {
-        log.info("mypage에서 세션 확인={}", request.getAttribute("isLogin"));
-        log.info("mypage에서 모델 값 확인={}", model.asMap());
-        return "user/mypage";
+    @GetMapping("/profile")
+    public String myPageForm(HttpServletRequest request, Model model) {
+
+        Member member = (Member) request.getSession(false).getAttribute("user");
+
+        model.addAttribute("member", member);
+
+        return "user/profile";
     }
 }

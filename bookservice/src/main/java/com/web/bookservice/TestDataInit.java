@@ -36,6 +36,7 @@ public class TestDataInit {
         member.setLoginId("thesting31");
         member.setName("정현모");
         member.setPassword("31");
+        member.setCity("전주");
 
         memberRepository.save(member);
 
@@ -54,18 +55,6 @@ public class TestDataInit {
         bookmark.setBook(book);
         bookmark.setMember(member);
 
-
-
-//        for(int i = 0; i < 23; i++) {
-//            Discussion discussion = new Discussion();
-//
-//            discussion.setMember(member);
-//            discussion.setTitle("이건 뭔");
-//            discussion.setText("장비를 정지합니다.");
-//            discussion.setWriteDate(LocalDate.now());
-//            discussion.setBook(book);
-//            discussionRepository.save(discussion);
-//        }
 
 
 

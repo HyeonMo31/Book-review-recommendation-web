@@ -88,13 +88,11 @@ public class DiscussionController {
 
 
     @GetMapping("/discussion/add")
-//    @Transactional
     public String discussionAddForm (Model model, HttpServletRequest request) {
 
         //현재 로그인한 사용자의 북마크 목록을 가져와야한다.
         Member member = (Member) request.getSession(false).getAttribute("user");
 
-//        List<Bookmark> bookmarkList = member.getBookmarks();
         List<Bookmark> bookmarkList = bookMarkService.findByMember(member);
 
         model.addAttribute("discussion", new Discussion());
@@ -104,13 +102,17 @@ public class DiscussionController {
 
     @PostMapping("/discussion/add")
     public String discussionAddForm (@Validated  @ModelAttribute Discussion discussion, BindingResult result,
-                                     HttpServletRequest request, RedirectAttributes redirectAttributes) {
+                                     HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+
+        Member member = (Member) request.getSession(false).getAttribute("user");
 
         if(result.hasErrors()) {
+            List<Bookmark> bookmarkList = bookMarkService.findByMember(member);
+            model.addAttribute("bookmarks", bookmarkList);
             return "discussion/addForm";
         }
 
-        Member member = (Member) request.getSession(false).getAttribute("user");
+
         discussion.setMember(member);
         discussion.setWriteDate(LocalDate.now());
         Long discussionId = discussionService.save(discussion);

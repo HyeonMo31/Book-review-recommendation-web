@@ -24,6 +24,8 @@ public class Member {
     @NotBlank
     private String password;
 
+    private String city;
+
     private LocalDateTime joinDate;
 
 

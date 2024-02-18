@@ -14,7 +14,7 @@
               <label for="id" class="form-label">아이디</label>
               <input type="text" class="form-control" id="id" th:field="*{loginId}" placeholder="" value="" required=""
                      th:errorclass="field-error">
-              <div class="field-error" th:errors="*{id}" />
+              <div class="field-error" th:errors="*{loginId}" />
             </div>
 
             <div class="col-12">
@@ -22,6 +22,13 @@
               <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="" required=""
                        th:errorclass="field-error">
               <div class="field-error" th:errors="*{name}" />
+            </div>
+
+            <div class="col-12">
+              <label for="name" class="form-label">도시</label>
+              <input type="text" class="form-control" id="city" th:field="*{city}" placeholder="" required=""
+                     th:errorclass="field-error">
+              <div class="field-error" th:errors="*{city}" />
             </div>
 
             <div class="col-12">

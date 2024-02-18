@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body>
+<div class="container heightCal">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <div class="container padding-bottom-3x mb-2">
+        <div class="row">
+            <div class="col-lg-3">
+                <aside class="user-info-wrapper">
+                    <div class="user-cover" style="background-image: url(https://bootdey.com/img/Content/bg1.jpg);">
+                        <div class="info-label" data-toggle="tooltip" title="" data-original-title="You currently have 290 Reward Points to spend"><i class="icon-medal"></i>290 points</div>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <a class="edit-avatar" href="#"></a><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="User"></div>
+                        <div class="user-data">
+                            <h4>Daniel Adams</h4><span>Joined February 06, 2017</span>
+                        </div>
+                    </div>
+                </aside>
+                <nav class="list-group">
+                    <a class="list-group-item active" th:href="@{/profile}"><i class="fa fa-user"></i>내 정보</a>
+                    <a class="list-group-item with-badge" href="#"><i class="fa fa-th"></i>토론 목록<span class="badge badge-primary badge-pill">6</span></a>
+                    <a class="list-group-item"  href="#"><i class="fa fa-map"></i>즐겨찾기 목록</a>
+<!--                    <a class="list-group-item with-badge" href="#"><i class="fa fa-heart"></i>Wishlist<span class="badge badge-primary badge-pill">3</span></a>-->
+<!--                    <a class="list-group-item with-badge active" href="#"><i class="fa fa-tag"></i>My Tickets<span class="badge badge-primary badge-pill">4</span></a>-->
+                </nav>
+            </div>
+            <div class="col-lg-9">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">내 정보</h4>
+                    </div>
+                    <form >
+                        <div class="row mt-2">
+                            <div class="col-md-12"><label class="labels">가입일</label><input th:value="${member.joinDate}" disabled type="date" class="form-control"  ></div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12" ><label class="labels">아이디</label><input th:value="${member.loginId}" disabled type="text" class="form-control"value=""></div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12"><label class="labels">이름</label><input th:value="${member.name}" type="text" class="form-control"  value=""></div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12" ><label class="labels">도시</label><input th:value="${member.city}" type="text" class="form-control"  value=""></div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12"><label class="labels">현재 비밀번호</label><input name="password" type="password" class="form-control"  value=""></div>
+                        </div>
+                        <!--                    <div class="row mt-3">-->
+                        <!--                        <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value=""></div>-->
+                        <!--                        <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" value="" placeholder="state"></div>-->
+                        <!--                    </div>-->
+                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Save Profile</button></div>
+                    </form>
+
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
