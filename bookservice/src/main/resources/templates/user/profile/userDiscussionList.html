@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body>
+<div class="container heightCal">
+  <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <div class="container padding-bottom-3x mb-2">
+    <div class="row">
+      <div class="col-lg-3">
+        <aside class="user-info-wrapper">
+          <div class="user-cover" style="background-image: url(https://bootdey.com/img/Content/bg1.jpg);">
+            <div class="info-label" data-toggle="tooltip" title="" data-original-title="You currently have 290 Reward Points to spend"><i class="icon-medal"></i>290 points</div>
+          </div>
+          <div class="user-info">
+            <div class="user-avatar">
+              <a class="edit-avatar" href="#"></a><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="User"></div>
+            <div class="user-data">
+              <h4 th:text="${member.name}">이름</h4><span th:text="${'Joined ' + member.joinDate}">Joined February 06, 2017</span>
+            </div>
+          </div>
+        </aside>
+        <nav class="list-group">
+          <a class="list-group-item " th:href="@{/profile}"><i class="fa fa-user"></i>내 정보</a>
+          <a class="list-group-item active with-badge" th:href="@{/profile/discussionList}"><i class="fa fa-th"></i>토론 목록<span  class="badge badge-primary badge-pill"></span></a>
+          <a class="list-group-item"  th:href="@{/profile/bookmarkList}"><i class="fa fa-map"></i>즐겨찾기 목록</a>
+          <!--                    <a class="list-group-item with-badge" href="#"><i class="fa fa-heart"></i>Wishlist<span class="badge badge-primary badge-pill">3</span></a>-->
+          <!--                    <a class="list-group-item with-badge active" href="#"><i class="fa fa-tag"></i>My Tickets<span class="badge badge-primary badge-pill">4</span></a>-->
+        </nav>
+      </div>
+      <div class="col-lg-9">
+        <div class="container ms-2 my-3">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <h5 class="card-title">Contact List <span th:text="'(' + ${totalSize} + ')'" class="text-muted fw-normal ms-2">사이즈.</span></h5>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="">
+                <div class="table-responsive">
+                  <table class="table project-list-table table-nowrap align-middle table-borderless">
+                    <thead>
+                    <tr class="text-center">
+                      <th scope="col" class="ps-4" style="width: 50px;">
+                        <!--                                                    <div class="form-check font-size-16"><input type="checkbox" class="form-check-input" id="contacusercheck" /><label class="form-check-label" for="contacusercheck"></label></div>-->
+                        Id
+                      </th>
+                      <th scope="col">제목</th>
+                      <th scope="col">책 이름</th>
+                      <th scope="col">작성일</th>
+                      <th scope="col">조회수</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="text-center" th:each="discussion : ${discussions}">
+                      <th scope="row" class="ps-4">
+                        <!--                                                    <div class="form-check font-size-16"><input type="checkbox" class="form-check-input" id="contacusercheck9" /><label class="form-check-label" for="contacusercheck9"></label></div>-->
+                        <div th:text="${discussion.id}"></div>
+                      </th>
+                      <td> <a th:href="@{/discussion/post/{id}(id=${discussion.id})}"
+                              th:text="${discussion.title}" class="text-body">제목</a> <span th:if="${discussion.comments.size > 0}" th:text="'(' +${discussion.comments.size} + ')'"></span></td>
+                      <td><a th:href="@{/search/book/{isbn}(isbn=${discussion.book.isbn})}">
+                        <span th:text="${discussion.book.title}" class="badge badge-soft-success mb-0">책 이름</span></a>
+                      </td>
+                      <td><span th:text="${discussion.writeDate}"></span></td>
+                      <td> <span>1</span> </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row g-0 align-items-center pb-4">
+            <div class="col-sm-6">
+              <div><p class="mb-sm-0">
+                Showing
+                <span th:text="${start}"/>
+                to
+                <span th:text="${end}"/>
+                of
+                <span th:text="${totalSize}"/>
+                entries
+              </p>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="float-sm-end">
+                <ul class="pagination mb-sm-0">
+                  <li class="page-item disabled">
+                    <a href="#" class="page-link"><i class="bi bi-chevron-double-left"></i></a>
+                  </li>
+                  <li th:if="${pageCount > 0}" th:each="pageNum : ${#numbers.sequence(0, pageCount-1)}" >
+                    <form th:href="@{/discussion/list}" th:class="${pageNum == currentPage} ? 'page-item active' : 'page-item'" >
+                      <button type="submit" class="page-link"  th:text="${pageNum+1}"/>
+                      <input th:if="${param.select != null and not param.select.isEmpty()}" type="hidden" name="select" th:value="${param.select}" />
+                      <input th:if="${param.query != null and not param.query.isEmpty()}" type="hidden" name="query" th:value="${param.query}" />
+                      <input th:if="${param.myDiscussion != null and not param.myDiscussion.isEmpty()}" type="hidden" name="myDiscussion" th:value="${param.myDiscussion}" />
+                      <input type="hidden" name="page" th:value="${pageNum}" />
+                    </form>
+                    </a>
+
+                  </li>
+                  <a href="#" class="page-link"><i class="bi bi-chevron-double-right"></i></a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

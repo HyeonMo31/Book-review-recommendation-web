@@ -8,10 +8,12 @@ import com.web.bookservice.repository.jpa.BookMarkRepository;
 import com.web.bookservice.repository.jpa.BookRepository;
 import com.web.bookservice.repository.jpa.DiscussionRepository;
 import com.web.bookservice.repository.jpa.MemberRepository;
+import com.web.bookservice.service.DiscussionService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Component
 public class TestDataInit {
@@ -37,6 +39,7 @@ public class TestDataInit {
         member.setName("정현모");
         member.setPassword("31");
         member.setCity("전주");
+        member.setJoinDate(LocalDateTime.now());
 
         memberRepository.save(member);
 
@@ -50,10 +53,16 @@ public class TestDataInit {
 
         bookRepository.save(book);
 
-        Bookmark bookmark = new Bookmark();
+        for(int i = 0; i < 11; i++) {
+            Discussion discussion = new Discussion();
+            discussion.setWriteDate(LocalDate.now());
+            discussion.setMember(member);
+            discussion.setBook(book);
+            discussion.setText("d");
+            discussion.setTitle("dddd");
+            discussionRepository.save(discussion);
+        }
 
-        bookmark.setBook(book);
-        bookmark.setMember(member);
 
 
 

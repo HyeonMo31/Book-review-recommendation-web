@@ -1,12 +1,16 @@
 package com.web.bookservice.controller;
 
+import com.web.bookservice.domain.Discussion;
 import com.web.bookservice.domain.LoginMember;
 import com.web.bookservice.domain.Member;
+import com.web.bookservice.domain.UserDTO;
+import com.web.bookservice.service.DiscussionService;
 import com.web.bookservice.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,14 +18,23 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Controller
-@RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberService memberService;
+    private MemberService memberService;
+    private DiscussionService discussionService;
+
+    public MemberController(MemberService memberService, DiscussionService discussionService) {
+        this.memberService = memberService;
+        this.discussionService = discussionService;
+    }
+
 
     @GetMapping("/login")
     public String loginForm(@ModelAttribute("loginMember")LoginMember loginMember) {
@@ -89,12 +102,102 @@ public class MemberController {
     }
 
     @GetMapping("/profile")
-    public String myPageForm(HttpServletRequest request, Model model) {
+    public String profileForm(HttpServletRequest request, Model model) {
+
+        Member member = (Member)request.getSession(false).getAttribute("user");
+
+        Member findMember = memberService.findByLoginId(member.getLoginId());
+
+        model.addAttribute("member", findMember);
+
+        return "user/profile/profile";
+    }
+
+    @PostMapping("/profile")
+    public  String profileUpdate(UserDTO userDTO, HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
         Member member = (Member) request.getSession(false).getAttribute("user");
 
-        model.addAttribute("member", member);
+        String password = userDTO.getPassword();
 
-        return "user/profile";
+        if(!memberService.validatePassword(password, member)) {
+            redirectAttributes.addFlashAttribute("fail", true);
+           return "redirect:/profile";
+        }
+
+        String name = userDTO.getName();
+        String city = userDTO.getCity();
+
+        memberService.profileUpdate(memberService.findByLoginId(member.getLoginId()), name, city);
+
+        redirectAttributes.addFlashAttribute("success", true);
+
+        return "redirect:/profile";
+    }
+
+    @GetMapping("/profile/discussionList")
+    public String userDiscussionList(@RequestParam(defaultValue = "0", name = "page")int page,
+                                     @RequestParam(name = "select", required = false) String select,
+                                     @RequestParam(name = "query", required = false) String query,
+                                     HttpServletRequest request,
+                                     Model model) {
+
+        Member member = (Member)request.getSession(false).getAttribute("user");
+
+        Member findMember = memberService.findByLoginId(member.getLoginId());
+
+        int pageSize = 10;
+
+        Page<Discussion> pageResult;
+        pageResult = discussionService.getDataByPageAndMember(findMember.getLoginId(),select, query ,page, pageSize);
+
+
+        long start = pageResult.getPageable().getOffset()+1;
+        long end = (start - 1) + pageResult.getNumberOfElements();
+
+
+        model.addAttribute("pageCount", pageResult.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("discussions", pageResult);
+        model.addAttribute("totalSize", pageResult.getTotalElements());
+        model.addAttribute("start", start);
+        model.addAttribute("end", end);
+        model.addAttribute("member", findMember);
+
+
+        return "user/profile/userDiscussionList";
+    }
+
+    @GetMapping("/profile/BookmarkList")
+    public String userBookmarkList(@RequestParam(defaultValue = "0", name = "page")int page,
+                                     @RequestParam(name = "select", required = false) String select,
+                                     @RequestParam(name = "query", required = false) String query,
+                                     HttpServletRequest request,
+                                     Model model) {
+
+        Member member = (Member)request.getSession(false).getAttribute("user");
+
+        Member findMember = memberService.findByLoginId(member.getLoginId());
+
+        int pageSize = 10;
+
+        Page<Discussion> pageResult;
+        pageResult = discussionService.getDataByPageAndMember(findMember.getLoginId(),select, query ,page, pageSize);
+
+
+        long start = pageResult.getPageable().getOffset()+1;
+        long end = (start - 1) + pageResult.getNumberOfElements();
+
+
+        model.addAttribute("pageCount", pageResult.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("discussions", pageResult);
+        model.addAttribute("totalSize", pageResult.getTotalElements());
+        model.addAttribute("start", start);
+        model.addAttribute("end", end);
+        model.addAttribute("member", findMember);
+
+
+        return "user/profile/userBookmarkList";
     }
 }

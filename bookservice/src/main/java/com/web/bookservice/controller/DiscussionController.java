@@ -7,6 +7,7 @@ import com.web.bookservice.domain.Member;
 import com.web.bookservice.service.BookMarkService;
 import com.web.bookservice.service.CommentService;
 import com.web.bookservice.service.DiscussionService;
+import com.web.bookservice.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,13 +31,16 @@ public class DiscussionController {
     private BookMarkService bookMarkService;
     private DiscussionService discussionService;
     private CommentService commentService;
+    private MemberService memberService;
 
     public DiscussionController(BookMarkService bookMarkService,
                                 DiscussionService discussionService,
-                                CommentService commentService) {
+                                CommentService commentService,
+                                MemberService memberService) {
         this.bookMarkService = bookMarkService;
         this.discussionService = discussionService;
         this.commentService = commentService;
+        this.memberService = memberService;
     }
 
     @GetMapping("/discussion/list")
@@ -92,9 +96,13 @@ public class DiscussionController {
 
         //현재 로그인한 사용자의 북마크 목록을 가져와야한다.
         Member member = (Member) request.getSession(false).getAttribute("user");
-
+        //아래 코드는 lazy 로딩오류가 나는 코드이다.
+//        List<Bookmark> bookmarkList = member.getBookmarks();
+        Member findMember = memberService.findByLoginId(member.getLoginId());
         List<Bookmark> bookmarkList = bookMarkService.findByMember(member);
 
+        model.addAttribute("name", findMember.getName());
+//        model.addAttribute("name", member.getName());
         model.addAttribute("discussion", new Discussion());
         model.addAttribute("bookmarks", bookmarkList);
         return "discussion/addForm";
