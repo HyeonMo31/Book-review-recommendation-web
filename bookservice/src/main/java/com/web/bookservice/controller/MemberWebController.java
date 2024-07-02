@@ -4,13 +4,10 @@ import com.web.bookservice.domain.*;
 import com.web.bookservice.service.BookMarkService;
 import com.web.bookservice.service.DiscussionService;
 import com.web.bookservice.service.MemberService;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,13 +18,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
-public class MemberController {
+public class MemberWebController {
 
     private MemberService memberService;
     private DiscussionService discussionService;
     private BookMarkService bookMarkService;
 
-    public MemberController(MemberService memberService, DiscussionService discussionService, BookMarkService bookMarkService) {
+    public MemberWebController(MemberService memberService, DiscussionService discussionService, BookMarkService bookMarkService) {
         this.memberService = memberService;
         this.discussionService = discussionService;
         this.bookMarkService = bookMarkService;
@@ -95,26 +92,8 @@ public class MemberController {
         }
         return "redirect:/";
     }
-
-
-    @GetMapping("/api/users/{loginId}")
-    @ResponseBody
-    public ResponseEntity<UserDTO> getUserInfo(HttpServletRequest request, @PathVariable("loginId") String loginId) {
-
-        Member findMember = memberService.findByLoginId(loginId);
-
-        UserDTO userDTO = new UserDTO();
-        userDTO.setCity(findMember.getCity());
-        userDTO.setName(findMember.getName());
-        userDTO.setJoinDate(findMember.getJoinDate());
-        userDTO.setLoginId(findMember.getLoginId());
-
-        return ResponseEntity.ok(userDTO);
-    }
-
     @GetMapping("/profile")
     public String profileForm(HttpServletRequest request, Model model) {
-
 
         Member member = (Member)request.getSession(false).getAttribute("user");
 
@@ -122,28 +101,6 @@ public class MemberController {
 
         return "user/profile/profile";
     }
-
-//    @PostMapping("/profile")
-//    public  String profileUpdate(UserDTO userDTO, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-//
-//        Member member = (Member) request.getSession(false).getAttribute("user");
-//
-//        String password = userDTO.getPassword();
-//
-//        if(!memberService.validatePassword(password, member)) {
-//            redirectAttributes.addFlashAttribute("fail", true);
-//           return "redirect:/profile";
-//        }
-//
-//        String name = userDTO.getName();
-//        String city = userDTO.getCity();
-//
-//        memberService.profileUpdate(memberService.findByLoginId(member.getLoginId()), name, city);
-//
-//        redirectAttributes.addFlashAttribute("success", true);
-//
-//        return "redirect:/profile";
-//    }
 
     @GetMapping("/profile/discussionList")
     public String userDiscussionList(@RequestParam(defaultValue = "0", name = "page")int page,

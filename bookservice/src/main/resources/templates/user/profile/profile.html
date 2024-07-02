@@ -16,7 +16,7 @@
                         <div class="user-avatar">
                             <a class="edit-avatar" href="#"></a><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="User"></div>
                         <div class="user-data">
-                            <h4 id="memoName">이름</h4><span>Joined February 06, 2017</span>
+                            <h4 id="memoName">이름</h4><span id="memoJoinDate">Joined February 06, 2017</span>
                         </div>
                     </div>
                 </aside>
@@ -33,7 +33,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="text-right">내 정보</h4>
                     </div>
-                    <form th:action="@{/profile}" method="post">
+                    <form id="profileForm">
                         <div class="row mt-2">
                             <div class="col-md-12"><label class="labels">가입일</label><input id="joinDate" disabled type="date" class="form-control"></div>
                         </div>
@@ -47,7 +47,7 @@
                             <div class="col-md-12" ><label class="labels">도시</label><input name="city" id="city" type="text" class="form-control"  value=""></div>
                         </div>
                         <div class="row mt-3">
-                            <div class="col-md-12"><label class="labels">현재 비밀번호</label><input id="password" name="password" type="password" class="form-control"  value=""></div>
+                            <div class="col-md-12"><label class="labels">현재 비밀번호</label><input id="password" name="password" type="password" maxlength=16 class="form-control"  value=""></div>
                         </div>
                                            <!-- <div class="row mt-3">
                                               <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value=""></div>
@@ -98,20 +98,43 @@
     }
     
     function render(userData) {
+        document.getElementById('memoName').innerText = userData.name;
+        document.getElementById('memoJoinDate').innerText = 'joined ' + userData.joinDate; 
         document.getElementById('joinDate').value = formatDate(new Date(userData.joinDate));
         document.getElementById('loginId').value = userData.loginId;
         document.getElementById('name').value = userData.name;
         document.getElementById('city').value = userData.city;
 
     }
+
+    document.getElementById('profileForm').addEventListener('submit', function(event) {
+
+        event.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const city = document.getElementById('city').value;
+        const password = document.getElementById('password').value; // Assuming you need to check current password
+        fetch(`/api/users/${loginId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, city, password })
+        })
+        .then(response => {
+            return response.text().then(text => {
+                if (response.ok) {
+                    alert(text);
+                    window.location.href = '/profile';
+                } else {
+                    throw new Error(text);
+                }
+            });
+        })
+        .catch(error => alert(error.message));
+    });
         
     
 </script>
-<!-- <script th:if="${fail}">
-        alert("비밀번호가 일치하지 않습니다.");
-   </script>
-<script th:if="${success}">
-        alert("데이터가 수정되었습니다.");
-   </script> -->
    
 </html>

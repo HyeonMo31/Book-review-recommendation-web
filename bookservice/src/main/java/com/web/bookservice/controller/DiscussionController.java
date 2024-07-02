@@ -43,6 +43,7 @@ public class DiscussionController {
         this.memberService = memberService;
     }
 
+
     @GetMapping("/discussion/list")
     public String discussionList(@RequestParam(defaultValue = "0", name = "page")int page,
             @RequestParam(name = "select", required = false) String select,

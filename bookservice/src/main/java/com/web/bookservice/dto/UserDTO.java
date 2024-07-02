@@ -1,4 +1,4 @@
-package com.web.bookservice.domain;
+package com.web.bookservice.dto;
 
 import lombok.Getter;
 import lombok.Setter;
