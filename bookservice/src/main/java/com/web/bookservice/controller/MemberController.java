@@ -1,27 +1,23 @@
 package com.web.bookservice.controller;
 
-import com.web.bookservice.domain.Discussion;
-import com.web.bookservice.domain.LoginMember;
-import com.web.bookservice.domain.Member;
-import com.web.bookservice.domain.UserDTO;
+import com.web.bookservice.domain.*;
+import com.web.bookservice.service.BookMarkService;
 import com.web.bookservice.service.DiscussionService;
 import com.web.bookservice.service.MemberService;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Controller
@@ -29,10 +25,12 @@ public class MemberController {
 
     private MemberService memberService;
     private DiscussionService discussionService;
+    private BookMarkService bookMarkService;
 
-    public MemberController(MemberService memberService, DiscussionService discussionService) {
+    public MemberController(MemberService memberService, DiscussionService discussionService, BookMarkService bookMarkService) {
         this.memberService = memberService;
         this.discussionService = discussionService;
+        this.bookMarkService = bookMarkService;
     }
 
 
@@ -46,12 +44,11 @@ public class MemberController {
 
 
         if(result.hasErrors()) {
-            log.info("무슨 에러가 있다는 것?={}", result);
             return "user/login";
         }
 
         Member member = memberService.login(loginMember.getLoginId(), loginMember.getPassword());
-        //rejecValue 안쓰면 에러코드 다음에 바로 디폴트 메시지 가능이구먼.
+
         if(member == null) {
 
             result.reject("notFound", "아이디 또는 비밀번호가 맞지 않습니다.");
@@ -59,7 +56,6 @@ public class MemberController {
         }
 
         HttpSession session = request.getSession();
-
 
         //세션이름을 뭘로 해야될까나?
         session.setAttribute("user",member);
@@ -84,7 +80,7 @@ public class MemberController {
             memberService.join(member);
             redirectAttributes.addFlashAttribute("successMessage", "회원가입이 완료 되었습니다.");
         } catch (IllegalStateException e) {
-            result.rejectValue("id", null, null, "이미 존재하는 아이디입니다.");
+            result.reject("id", "이미 존재하는 아이디입니다.");
             return "user/register";
         }
         return "redirect:/login";
@@ -95,45 +91,59 @@ public class MemberController {
 
         HttpSession session = request.getSession(false);
         if (session != null) {
-            log.info("세션 삭제? 된건가?");
             session.invalidate();
         }
         return "redirect:/";
     }
 
+
+    @GetMapping("/api/users/{loginId}")
+    @ResponseBody
+    public ResponseEntity<UserDTO> getUserInfo(HttpServletRequest request, @PathVariable("loginId") String loginId) {
+
+        Member findMember = memberService.findByLoginId(loginId);
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setCity(findMember.getCity());
+        userDTO.setName(findMember.getName());
+        userDTO.setJoinDate(findMember.getJoinDate());
+        userDTO.setLoginId(findMember.getLoginId());
+
+        return ResponseEntity.ok(userDTO);
+    }
+
     @GetMapping("/profile")
     public String profileForm(HttpServletRequest request, Model model) {
 
+
         Member member = (Member)request.getSession(false).getAttribute("user");
 
-        Member findMember = memberService.findByLoginId(member.getLoginId());
-
-        model.addAttribute("member", findMember);
+        model.addAttribute("loginId", member.getLoginId());
 
         return "user/profile/profile";
     }
 
-    @PostMapping("/profile")
-    public  String profileUpdate(UserDTO userDTO, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-
-        Member member = (Member) request.getSession(false).getAttribute("user");
-
-        String password = userDTO.getPassword();
-
-        if(!memberService.validatePassword(password, member)) {
-            redirectAttributes.addFlashAttribute("fail", true);
-           return "redirect:/profile";
-        }
-
-        String name = userDTO.getName();
-        String city = userDTO.getCity();
-
-        memberService.profileUpdate(memberService.findByLoginId(member.getLoginId()), name, city);
-
-        redirectAttributes.addFlashAttribute("success", true);
-
-        return "redirect:/profile";
-    }
+//    @PostMapping("/profile")
+//    public  String profileUpdate(UserDTO userDTO, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+//
+//        Member member = (Member) request.getSession(false).getAttribute("user");
+//
+//        String password = userDTO.getPassword();
+//
+//        if(!memberService.validatePassword(password, member)) {
+//            redirectAttributes.addFlashAttribute("fail", true);
+//           return "redirect:/profile";
+//        }
+//
+//        String name = userDTO.getName();
+//        String city = userDTO.getCity();
+//
+//        memberService.profileUpdate(memberService.findByLoginId(member.getLoginId()), name, city);
+//
+//        redirectAttributes.addFlashAttribute("success", true);
+//
+//        return "redirect:/profile";
+//    }
 
     @GetMapping("/profile/discussionList")
     public String userDiscussionList(@RequestParam(defaultValue = "0", name = "page")int page,
@@ -168,12 +178,10 @@ public class MemberController {
         return "user/profile/userDiscussionList";
     }
 
-    @GetMapping("/profile/BookmarkList")
+    @GetMapping("/profile/bookmarkList")
     public String userBookmarkList(@RequestParam(defaultValue = "0", name = "page")int page,
-                                     @RequestParam(name = "select", required = false) String select,
-                                     @RequestParam(name = "query", required = false) String query,
-                                     HttpServletRequest request,
-                                     Model model) {
+                                             HttpServletRequest request,
+                                             Model model) {
 
         Member member = (Member)request.getSession(false).getAttribute("user");
 
@@ -181,17 +189,15 @@ public class MemberController {
 
         int pageSize = 10;
 
-        Page<Discussion> pageResult;
-        pageResult = discussionService.getDataByPageAndMember(findMember.getLoginId(),select, query ,page, pageSize);
-
+        Page<Bookmark> pageResult;
+        pageResult = bookMarkService.findByMember(member, page, pageSize);
 
         long start = pageResult.getPageable().getOffset()+1;
         long end = (start - 1) + pageResult.getNumberOfElements();
 
-
         model.addAttribute("pageCount", pageResult.getTotalPages());
         model.addAttribute("currentPage", page);
-        model.addAttribute("discussions", pageResult);
+        model.addAttribute("bookmarks", pageResult);
         model.addAttribute("totalSize", pageResult.getTotalElements());
         model.addAttribute("start", start);
         model.addAttribute("end", end);

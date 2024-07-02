@@ -5,6 +5,9 @@ import com.web.bookservice.domain.Bookmark;
 import com.web.bookservice.domain.Member;
 import com.web.bookservice.repository.jpa.BookMarkRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +27,17 @@ public class BookMarkService {
         bookmark.setMember(member);
         bookmark.setBook(book);
 
-        if(validateDuplicateBookmark(book, member))
+        if (validateDuplicateBookmark(book, member))
             return;
 
         repository.save(bookmark);
+    }
+
+    public Page<Bookmark> findByMember(Member member, int page, int pageSize) {
+
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        return repository.findByMember(member, pageable);
     }
 
     public boolean existsByMemberAndBook(Book book, Member member) {

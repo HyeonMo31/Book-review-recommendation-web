@@ -55,19 +55,18 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr class="text-center" th:each="book : ${books}">
+                    <tr class="text-center" th:each="bookmark : ${bookmarks}">
                       <th scope="row" class="ps-4">
                         <!--                                                    <div class="form-check font-size-16"><input type="checkbox" class="form-check-input" id="contacusercheck9" /><label class="form-check-label" for="contacusercheck9"></label></div>-->
-                        <div th:text="${book.id}"></div>
+                        <div th:text="${bookmark.id}"></div>
                       </th>
-                      <td> <a th:href="@{/search/book/{isbn}(isbn=${book.isbn})}"
-                              th:text="${book.isbn}" class="text-body">ISBN</a>
-                      <td><a th:href="@{/search/book/{isbn}(isbn=${book.isbn})}">
-                        <span th:text="${book.title}" class="badge badge-soft-success mb-0">책 이름</span></a>
+                      <td> <a th:href="@{/search/book/{isbn}(isbn=${bookmark.book.isbn})}"
+                              th:text="${bookmark.book.isbn}" class="text-body">ISBN</a>
+                      <td><a th:href="@{/search/book/{isbn}(isbn=${bookmark.book.isbn})}">
+                        <span th:text="${bookmark.book.title}" class="badge badge-soft-success mb-0">책 이름</span></a>
                       </td>
-                      <td><span th:text="${discussion.author}"></span></td>
-                      <td><span th:text="${discussion.publisher}"></span></td>
-                      <td> <span>1</span> </td>
+                      <td><span th:text="${bookmark.book.author}"></span></td>
+                      <td><span th:text="${bookmark.book.publisher}"></span></td>
                     </tr>
                     </tbody>
                   </table>
