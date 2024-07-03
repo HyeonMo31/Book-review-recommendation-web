@@ -67,6 +67,7 @@ public class DiscussionService {
 
     public Page<Discussion> getDataByPage(String select, String query, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
+        log.info("discussionService 에서의 select= {}", select);
         if(select == null) {
             return repository.findAll(pageable);
         } else if(select.equals("title")){

@@ -30,8 +30,6 @@ public class MemberApiController {
         return ResponseEntity.ok(userDTO);
     }
 
-
-
     @PatchMapping("/api/users/{loginId}")
     @ResponseBody
     public  ResponseEntity<?> profileUpdate(@PathVariable("loginId") String loginId,

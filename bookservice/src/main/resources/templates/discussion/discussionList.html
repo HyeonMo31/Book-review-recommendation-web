@@ -62,7 +62,7 @@
                             <option value="3">No Replies Yet</option>
                         </select>
                         <form class="d-flex align-items-center" th:action="@{/discussion/list}" method="get">
-                            <select name="select" class="form-select form-select-sm me-1" style="width: 90px">
+                            <select id="select" name="select" class="form-select form-select-sm me-1" style="width: 90px">
                                 <option value="title" selected="">제목</option>
                                 <option value="bookName">책이름</option>
                                 <option value="writer">작성자</option>
@@ -179,4 +179,34 @@
 </div>
 <div th:replace="fragments/footer :: footer"></div>
 </body>
+<script>
+
+    // let page = 0; 
+    // let select; 
+    // let query; 
+
+    // const url = new URL('/api/discussions', window.location.origin);
+    // url.searchParams.append('page', page);
+    // select ? url.searchParams.append('select', select) : 
+    // query ? url.searchParams.append('query', query) : 
+
+    // fetch(url)
+    // // fetch('api/users/' + loginId)
+    //     .then(response => {
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok');
+    //         }
+    //         return response.json(); // JSON 형식으로 응답을 파싱
+    //     })
+    //     .then(data => {
+    //         // 데이터를 성공적으로 받아왔을 때 처리할 로직
+    //         console.log('User Info Data:', data);
+    //     })
+    //     .catch(error => {
+    //         console.error('There has been a problem with your fetch operation:', error);
+    //         // 오류 처리 로직
+    //     });
+
+
+</script>
 </html>

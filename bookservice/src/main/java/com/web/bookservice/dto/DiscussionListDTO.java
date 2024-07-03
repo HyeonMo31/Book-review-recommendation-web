@@ -7,8 +7,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class DiscussionSearchDTO {
-
+public class DiscussionListDTO {
     private Long id;
     private String title;
     private String bookTitle;

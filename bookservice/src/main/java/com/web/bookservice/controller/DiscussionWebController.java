@@ -22,21 +22,20 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @Slf4j
-public class DiscussionController {
+public class DiscussionWebController {
 
     private BookMarkService bookMarkService;
     private DiscussionService discussionService;
     private CommentService commentService;
     private MemberService memberService;
 
-    public DiscussionController(BookMarkService bookMarkService,
-                                DiscussionService discussionService,
-                                CommentService commentService,
-                                MemberService memberService) {
+    public DiscussionWebController(BookMarkService bookMarkService,
+                                   DiscussionService discussionService,
+                                   CommentService commentService,
+                                   MemberService memberService) {
         this.bookMarkService = bookMarkService;
         this.discussionService = discussionService;
         this.commentService = commentService;
@@ -70,7 +69,6 @@ public class DiscussionController {
 
         long start = pageResult.getPageable().getOffset()+1;
         long end = (start - 1) + pageResult.getNumberOfElements();
-        log.info("start={}", start);
 
         //페이지 개수 넘겨야 되니까.
 
@@ -95,17 +93,9 @@ public class DiscussionController {
     @GetMapping("/discussion/add")
     public String discussionAddForm (Model model, HttpServletRequest request) {
 
-        //현재 로그인한 사용자의 북마크 목록을 가져와야한다.
         Member member = (Member) request.getSession(false).getAttribute("user");
-        //아래 코드는 lazy 로딩오류가 나는 코드이다.
-//        List<Bookmark> bookmarkList = member.getBookmarks();
-        Member findMember = memberService.findByLoginId(member.getLoginId());
-        List<Bookmark> bookmarkList = bookMarkService.findByMember(member);
+        model.addAttribute("loginId", member.getLoginId());
 
-        model.addAttribute("name", findMember.getName());
-//        model.addAttribute("name", member.getName());
-        model.addAttribute("discussion", new Discussion());
-        model.addAttribute("bookmarks", bookmarkList);
         return "discussion/addForm";
     }
 

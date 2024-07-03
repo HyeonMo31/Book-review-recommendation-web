@@ -1,57 +1,122 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header">
-</head>
-<body>
-
-<div class="container heightCal">
-  <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
-  <div id="contact" class="contact-area section-padding">
-    <div class="container">
-      <div class="section-title text-center">
-        <h1>자유 토론</h1>
-        <p>토론의 주제는 자유이며 책을 한권 선택해야 합니다. 책은 즐겨찾기에 있는 책만 선택이 가능합니다. 즐겨찾기 책이 없다면 추가하고 오십시오.</p>
-      </div>
-      <div class="row justify-content-center">
-        <div class="col-lg-7">
-          <div class="contact" >
-            <form th:object="${discussion}" class="form" method="post" th:action="@{/discussion/add}">
-              <div class="row mb-5">
-
-                <div class="form-group col-md-6 mb-2" >
-                  <div ><span class="bi bi-person me-2"></span>작성자</div>
-                  <input disabled type="text" th:value="${name}" name="name" class="form-control" style="background: #eee;">
-                </div>
-
-                <div class="form-group col-md-12 mb-2">
-                  <span ><span class="bi bi-archive me-2"></span>제목</span>  <span class="field-error" th:errors="*{title}" />
-                  <input type="text" th:field="*{title}" class="form-control" placeholder="Subject" style="background: #eee;">
-                </div>
-
-                <div class="form-group col-md-12 mb-2">
-                  <span ><span class="bi bi-book me-2"></span>책 이름</span>  <span class="field-error" th:errors="*{book}" />
-<!--                  <input type="text" name="subject" class="form-control" placeholder="Subject" required="required" style="background: #eee;">-->
-                  <select th:field="*{book}" class="form-select form-select-sm ">
-                    <option th:each="bookmark : ${bookmarks}" th:value="${bookmark.book.id}" th:text="${bookmark.book.title}"></option>
-                  </select>
-                </div>
-
-                <div class="form-group col-md-12 mb-2">
-                  <span ><span class="bi bi-clipboard me-2"></span>글 작성</span>  <span class="field-error" th:errors="*{text}" />
-                  <textarea rows="16" th:field="*{text}" class="form-control" placeholder="Your Message" style="background: #eee;"></textarea>
-                </div>
-
-                <div class="col-md-12 text-center">
-                  <button type="submit" value="Send message" name="submit" id="submitButton" class="btn btn-contact-bg" title="Submit Your Message!">작성</button>
-                </div>
-              </div>
-            </form>
+  <head th:replace="fragments/header :: header"> </head>
+  <body>
+    <div class="container heightCal">
+      <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+      <div id="contact" class="contact-area section-padding">
+        <div class="container">
+          <div class="section-title text-center">
+            <h1>자유 토론</h1>
+            <p>
+              토론의 주제는 자유이며 책을 한권 선택해야 합니다. 책은 즐겨찾기에
+              있는 책만 선택이 가능합니다. 즐겨찾기 책이 없다면 추가하고
+              오십시오.
+            </p>
           </div>
-        </div><!--- END COL -->
-      </div><!--- END ROW -->
-    </div><!--- END CONTAINER -->
-  </div>
-</div>
-<div th:replace="fragments/footer :: footer"></div>
-</body>
+          <div class="row justify-content-center">
+            <div class="col-lg-7">
+              <div class="contact">
+                <form id="addForm" class="form">
+                  <div class="row mb-5">
+                    <div class="form-group col-md-6 mb-2">
+                      <div><span class="bi bi-person me-2"></span>작성자</div>
+                      <input
+                        id="name"
+                        disabled
+                        type="text"
+                        name="name"
+                        class="form-control"
+                        style="background: #eee"
+                      />
+                    </div>
+
+                    <div class="form-group col-md-12 mb-2">
+                      <span><span class="bi bi-archive me-2"></span>제목</span>
+                      <span class="field-error" />
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Subject"
+                        style="background: #eee"
+                      />
+                    </div>
+
+                    <div class="form-group col-md-12 mb-2">
+                      <span><span class="bi bi-book me-2"></span>책 이름</span>
+                      <span class="field-error" />
+                      <!--                  <input type="text" name="subject" class="form-control" placeholder="Subject" required="required" style="background: #eee;">-->
+                      <select
+                        id="select"
+                        class="form-select form-select-sm"
+                      ></select>
+                    </div>
+
+                    <div class="form-group col-md-12 mb-2">
+                      <span
+                        ><span class="bi bi-clipboard me-2"></span>글 작성</span
+                      >
+                      <span class="field-error" />
+                      <textarea
+                        rows="16"
+                        class="form-control"
+                        placeholder="Your Message"
+                        style="background: #eee"
+                      ></textarea>
+                    </div>
+
+                    <div class="col-md-12 text-center">
+                      <button
+                        type="submit"
+                        value="Send message"
+                        name="submit"
+                        id="submitButton"
+                        class="btn btn-contact-bg"
+                        title="Submit Your Message!"
+                      >
+                        작성
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!--- END COL -->
+          </div>
+          <!--- END ROW -->
+        </div>
+        <!--- END CONTAINER -->
+      </div>
+    </div>
+    <div th:replace="fragments/footer :: footer"></div>
+  </body>
+  <script>
+    const loginId = "[[${loginId}]]";
+    fetch(`/api/bookmarks/${loginId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        document.getElementById("name").value = data.name;
+        const selectElement = document.getElementById("select");
+        data.bookMarksDTOList.forEach((book) => {
+          const option = document.createElement("option");
+          option.value = book.isbn;
+          option.textContent = book.title;
+          selectElement.appendChild(option);
+        });
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+  </script>
 </html>
